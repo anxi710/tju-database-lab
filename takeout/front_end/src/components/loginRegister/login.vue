@@ -1,143 +1,42 @@
 <template>
+    <!-- 登录表单 -->
+    <div class="loginBox" v-if="curBox == 'loginBox'">
 
-    <div class="container">
+        <div class="head">同舟共济外卖平台</div>
 
-        <!-- 登录表单 -->
-        <div class="loginBox" v-if="curBox == 'loginBox'">
+        <div>
 
-            <div class="head">同舟共济外卖平台</div>
+            <el-form label-width="60px" class="loginForm" :model="loginForm" :rules="loginRules" ref="loginForm">
+                <!-- 用户名 -->
+                <el-form-item prop="username">
+                    <el-input prefix-icon="el-icon-user" v-model="loginForm.username" spellcheck="false"
+                        placeholder="用户名" clearable />
+                </el-form-item>
+                <!-- 密码 -->
+                <el-form-item prop="password">
+                    <el-input prefix-icon="el-icon-lock" v-model="loginForm.password" spellcheck="false"
+                        placeholder="密码" show-password />
+                </el-form-item>
+            </el-form>
 
             <div>
-
-                <el-form label-width="60px" class="loginForm" :model="loginForm"
-                    :rules="loginRules" ref="loginForm">
-                    <!-- 用户名 -->
-                    <el-form-item prop="username">
-                        <el-input prefix-icon="el-icon-user" v-model="loginForm.username"
-                            spellcheck="false" placeholder="用户名" clearable/>
-                    </el-form-item>
-                    <!-- 密码 -->
-                    <el-form-item prop="password">
-                        <el-input prefix-icon="el-icon-lock" v-model="loginForm.password"
-                            spellcheck="false" placeholder="密码" show-password/>
-                    </el-form-item>
-                </el-form>
-
-                <div>
-                    <el-button class="btns" @click="login()">登录</el-button>
-                </div>
-
-                <div class="otherBoxes">
-                    <span id="registerBoxBtn" @click="changeBox('registerBox')">注册</span>
-                    <span style="border-left: 1px solid rgb(0, 0, 0, 0.5)"></span>
-                    <span id="forgetBoxBtn" @click="changeBox('forgetBox')">忘记密码</span>
-                </div>
-
+                <el-button class="btns" @click="login()">登录</el-button>
             </div>
 
-        </div>
-
-        <!-- 注册表单 -->
-        <div class="registerBox" v-else-if="curBox == 'registerBox'">
-
-            <div class="head">同舟共济外卖平台</div>
-
-            <div>
-
-                <el-form label-width="60px" class="registerForm" :model="registerForm"
-                    :rules="registerRules" ref="registerForm" status-icon>
-
-                    <el-form-item prop="username">
-                        <el-input v-model="registerForm.username" spellcheck="false"
-                            prefix-icon="el-icon-user" placeholder="用户名"/>
-                    </el-form-item>
-
-                    <el-form-item prop="telephone">
-                        <el-input v-model="registerForm.telephone" spellcheck="false"
-                            prefix-icon="el-icon-phone" placeholder="电话号码"/>
-                    </el-form-item>
-
-                    <el-form-item prop="password">
-                        <el-input v-model="registerForm.password" show-password spellcheck="false"
-                            placeholder="6 - 12 位大小写字母或数字" prefix-icon="el-icon-lock"/>
-                    </el-form-item>
-
-                    <el-form-item prop="confirmPassword">
-                        <el-input v-model="registerForm.confirmPassword" spellcheck="false"
-                            show-password prefix-icon="el-icon-check" placeholder="确认密码"/>
-                    </el-form-item>
-
-                </el-form>
-
-                <div>
-                    <el-button class="btns" @click="register()">注册</el-button>
-                </div>
-
-                <div style="text-align: center;">
-                    <span @click="changeBox('loginBox')"
-                        style="opacity: 0.5; font-size: 16px; cursor:pointer;">登录</span>
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- 找回密码 -->
-        <div class="forgetBox" v-else-if="curBox == 'forgetBox'">
-
-            <div class="head">同舟共济外卖平台</div>
-
-            <div>
-
-                <el-form label-width="60px" class="forgetForm" :model="forgetForm" :rules="forgetRules"
-                    ref="forgetForm" status-icon>
-
-                    <el-form-item prop="telephone">
-                        <el-input prefix-icon="el-icon-phone" v-model="forgetForm.telephone"
-                            spellcheck="false" placeholder="电话号码" clearable/>
-                    </el-form-item>
-
-                    <el-form-item prop="password">
-                        <el-input prefix-icon="el-icon-lock" v-model="forgetForm.password" show-password
-                            spellcheck="false" placeholder="新密码"/>
-                    </el-form-item>
-
-                    <el-form-item prop="confirmPassword">
-                        <el-input prefix-icon="el-icon-check" v-model="forgetForm.confirmPassword" show-password
-                            spellcheck="false" placeholder="确认密码"/>
-                    </el-form-item>
-
-                </el-form>
-
-                <div>
-                    <el-button class="btns" @click="doubleCheck()">确认修改</el-button>
-                </div>
-
-                <!-- 二次确认对话框 -->
-                <el-dialog title="确认提交" :visible.sync="dialogVisible" width="400px" @close=handleCancel()>
-                    <span>您确定要提交表单吗？</span>
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="handleCancel">取消</el-button>
-                        <el-button type="primary" @click="handleConfirm">确认</el-button>
-                    </span>
-                </el-dialog>
-
-                <div style="text-align: center;">
-                    <span @click="changeBox('loginBox')"
-                        style="color: rgb(0, 0, 0, 0.5); font-size: 16px; cursor:pointer;">登录</span>
-                </div>
-
+            <div class="otherBoxes">
+                <span id="registerBoxBtn" @click="changeBox('registerBox')">注册</span>
+                <span style="border-left: 1px solid rgb(0, 0, 0, 0.5)"></span>
+                <span id="forgetBoxBtn" @click="changeBox('forgetBox')">忘记密码</span>
             </div>
 
         </div>
 
     </div>
-
 </template>
 
 <script>
 export default {
-    name: 'loginRegister',
+    name: 'loginBox',
     data() {
         var checkValidPassword = (rule, value, callback) => {
             const regexRule = /^[a-zA-Z1-9]{6,12}$/;
@@ -183,9 +82,9 @@ export default {
             },
             loginRules: {
                 username: [{
-                        required: true,
-                        message: '请输入用户名',
-                        trigger: 'blur'
+                    required: true,
+                    message: '请输入用户名',
+                    trigger: 'blur'
                 }],
                 password: [
                     {
@@ -283,33 +182,32 @@ export default {
             this.$refs.reg_form.validate(valid => {
                 if (!valid)
                     return;
-                else{
-                    if(this.reg_form.vercode=='')
+                else {
+                    if (this.reg_form.vercode == '')
                         return;
-                    else{
+                    else {
                         this.$axios.request({
-                            method:'POST',
-                            url:'/api/user/register/test',
-                            data:{
-                                username:this.reg_form.username,
-                                password:this.reg_form.password,
-                                vercode:this.reg_form.vercode,
-                                telephone:this.reg_form.telephone
+                            method: 'POST',
+                            url: '/api/user/register/test',
+                            data: {
+                                username: this.reg_form.username,
+                                password: this.reg_form.password,
+                                vercode: this.reg_form.vercode,
+                                telephone: this.reg_form.telephone
                             }
-                        }).then((res)=>{
+                        }).then((res) => {
                             // console.log(res.status);
-                            if(res.data.status==200)
-                            {
+                            if (res.data.status == 200) {
                                 this.$message({
-                                message: '注册成功',
-                                type: 'success'
+                                    message: '注册成功',
+                                    type: 'success'
                                 })
-                            this.target = 1;
-                            // 页面变为登录页面
-                            }else{
+                                this.target = 1;
+                                // 页面变为登录页面
+                            } else {
                                 this.$message({
-                                message: res.data.msg,
-                                type: 'error'
+                                    message: res.data.msg,
+                                    type: 'error'
                                 })
                             }
                         })
@@ -381,7 +279,7 @@ export default {
     line-height: 50px;
     font-size: larger;
     font-size: 23px;
-    color:#97D9E1;
+    color: #97D9E1;
     padding: 7px;
 }
 

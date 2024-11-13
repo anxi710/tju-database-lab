@@ -2,3 +2,4 @@ reference/
 reference2/
 .vscode/
 .idea/
+*.log

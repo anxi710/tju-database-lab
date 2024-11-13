@@ -2,59 +2,69 @@
     <div class="container">
 
         <!-- 登录表单 -->
-        <div class="login_box" v-if="target == 1">
+        <div class="loginBox" v-if="curBox == 'loginBox'">
+
             <div class="head">同舟共济外卖平台</div>
+
             <div>
-                <el-form label-width="0" class="login_form" :model="login_form" :rules="login_rules" ref="login_form">
+
+                <el-form label-width="100px" class="loginForm" :model="loginForm" :rules="loginRules" ref="loginForm">
                     <!-- 用户名 -->
-                    <el-form-item prop="username">
-                        <el-input v-model="login_form.username" spellcheck="false" placeholder="用户名"/>
+                    <el-form-item prop="username" label="用户名">
+                        <el-input v-model="loginForm.username" spellcheck="false" placeholder="用户名"/>
                     </el-form-item>
                     <!-- 密码 -->
-                    <el-form-item prop="password">
-                        <el-input v-model="login_form.password" show-password spellcheck="false" placeholder="密码"/>
-                    </el-form-item>
-                    <!-- 按钮 -->
-                    <el-form-item class="btns">
-                        <el-button type="primary" @click="llogin()">登录</el-button>
+                    <el-form-item prop="password" label="密码">
+                        <el-input v-model="loginForm.password" show-password spellcheck="false" placeholder="密码"/>
                     </el-form-item>
                 </el-form>
 
                 <div>
-                    <div class="operate">
-                        <span id="op1" @click="change(2)">注册</span>
-                        <span id="op2" @click="change(3)">忘记密码</span>
-                    </div>
+                    <el-button class="btns" @click="login()">登录</el-button>
+                </div>
+
+                <div class="otherBoxes">
+                    <span id="registerBoxBtn" @click="changeBox('registerBox')">注册</span>
+                    <span style="border-left: 1px solid rgb(0, 0, 0, 0.5)"></span>
+                    <span id="forgetBoxBtn" @click="changeBox('forgetBox')">忘记密码</span>
                 </div>
 
             </div>
+
         </div>
 
         <!-- 注册表单 -->
-        <div class="reg_box" v-if="target == 2">
+        <div class="registerBox" v-if="curBox == 'registerBox'">
+
             <div class="head">同舟共济外卖平台</div>
+
             <div>
-                <el-form class="reg_form" :model="reg_form" :rules="reg_rules" ref="reg_form">
-                    <!-- 用户名 -->
-                    <el-form-item prop="username">
-                        <el-input prefix-icon="iconfont icon-user" v-model="reg_form.username" spellcheck="false"
-                            placeholder="用户名">
-                        </el-input>
-                    </el-form-item>
-                    <!-- 密码 -->
-                    <el-form-item prop="password">
-                        <el-input prefix-icon="iconfont icon-password" v-model="reg_form.password" show-password
-                            spellcheck="false" placeholder="密码(包含大小写字母、数字，长度在6-12之间)"></el-input>
+
+                <el-form label-width="100px" class="reg_form" :model="registerForm"
+                    :rules="registerRules" ref="registerForm">
+
+                    <el-form-item prop="username" label="用户名">
+                        <el-input v-model="registerForm.username" spellcheck="false"/>
                     </el-form-item>
 
-                    <el-form-item prop="telephone">
-                        <el-input prefix-icon="iconfont icon-password" v-model="reg_form.telephone" spellcheck="false"
-                            placeholder="手机号码"></el-input>
+                    <el-form-item prop="username" label="电话">
+                        <el-input v-model="registerForm.telephone" spellcheck="false"/>
                     </el-form-item>
 
-                    <el-form-item prop="vercode">
-                        <el-input v-model="reg_form.vercode" spellcheck="false" placeholder="验证码" style="width:230px">
-                        </el-input>
+                    <el-form-item prop="password" label="密码">
+                        <el-input v-model="registerForm.password" show-password
+                            spellcheck="false" placeholder="6 - 12 位大小写字母或数字"/>
+                    </el-form-item>
+
+                    <el-form-item prop="confirmPassword" label="确认密码">
+                        <el-input v-model="registerForm.confirmPassword" spellcheck="false" placeholder="再次输入密码"/>
+                    </el-form-item>
+
+                    <el-form-item prop="verificationCode" label="验证码">
+
+                        <el-input v-model="registerForm.vercode" spellcheck="false"
+                            placeholder="验证码" style="width:200px"/>
+
                         <span style="width:120px;font-size: 16px;cursor: pointer;" @click="send_vercode_pre()"
                             v-show="getcode_show">
                             获取验证码
@@ -64,31 +74,31 @@
                             {{ time_count }}s后重新获取
                         </span>
                     </el-form-item>
-                    <!-- 按钮 -->
-                    <el-form-item class="btns">
-                        <el-button type="primary" @click="zhuce()">注册</el-button>
-                    </el-form-item>
 
                 </el-form>
+
                 <div>
-                    <div>
-                        <span @click="change(1)"
-                            style="margin-left:210px;color: #000;opacity: .5;font-weight: 400;font-size: 16px;cursor:pointer;">登录</span>
-                    </div>
+                    <el-button type="primary" @click="register()">注册</el-button>
+                </div>
+
+                <div>
+                    <span @click="changeBox('loginBox')"
+                        style="text-align: center; opacity: 0.5; font-size: 16px; cursor:pointer;">登录</span>
                 </div>
             </div>
         </div>
 
         <!-- 找回密码 -->
-        <div class="forget_box" v-if="target == 3">
+        <div class="forgetBox" v-if="curBox == 'forgetBox'">
             <div class="head">同舟共济外卖平台</div>
             <div>
-                <el-form class="reg_form" :model="findback_form" :rules="findback_rules" ref="findback_form">
+                <el-form class="reg_form" :model="forgetForm" :rules="forgetRules" ref="forgetForm">
 
                     <el-form-item prop="telephone">
-                        <el-input prefix-icon="iconfont icon-password" v-model="reg_form.telephone" spellcheck="false"
-                            placeholder="手机号码"></el-input>
+                        <el-input prefix-icon="iconfont icon-password" v-model="forgetForm.telephone"
+                            spellcheck="false" placeholder="手机号码"/>
                     </el-form-item>
+
                     <!-- 密码 -->
                     <el-form-item prop="password">
                         <el-input prefix-icon="iconfont icon-password" v-model="reg_form.password" show-password
@@ -96,7 +106,7 @@
                     </el-form-item>
 
                     <el-form-item prop="vercode">
-                        <el-input v-model="reg_form.vercode" spellcheck="false" placeholder="验证码" style="width:230px">
+                        <el-input v-model="forgetForm.vercode" spellcheck="false" placeholder="验证码" style="width:230px">
                         </el-input>
                         <span style="width:120px;font-size: 16px;cursor: pointer;" @click="send_vercode_pre()"
                             v-show="getcode_show">
@@ -115,28 +125,28 @@
                 </el-form>
                 <div>
                     <div>
-                        <span @click="change(1)"
+                        <span @click="changeBox('loginBox')"
                             style="margin-left:210px;color: #000;opacity: .5;font-weight: 400;font-size: 16px;cursor:pointer;">登录</span>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 
 <script>
 export default {
-    name: 'MyLogin',
+    name: 'loginRegister',
     data() {
-        var checkPassword = (rule, value, cb) => {
-            const regPassword = /(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{6,12}$/;
-            if (regPassword.test(value)) {
-                // 合法的手机号码
-                return cb()
+        var checkValidPassword = (rule, value, callback) => {
+            const regexRule = /^[a-zA-Z1-9]{6,12}$/;
+            if (regexRule.test(value)) {
+                return callback() // 合法的密码
             }
-            cb(new Error('包含大写字母、小写字母、数字，长度在6-12位之间'))
+            callback(new Error('密码格式不正确，密码必须由 6-12 位大小写字母或数字组成'))
         };
-        var checkMobile = (rule, value, cb) => {
+        var checkValidMobile = (rule, value, cb) => {
             const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
             if (regMobile.test(value)) {
                 // 合法的手机号码
@@ -144,54 +154,116 @@ export default {
             }
             cb(new Error('手机号码格式不正确'))
         };
+        var checkConfirmPassword = (rule, value, callback) => {
+            if (value === this.registerForm.password) {
+                return callback()
+            }
+            callback(new Error('两次输入密码不一致'))
+        };
         return {
             getcode_show: true,
             time_count: '',
             timer: null,
-            target: 1,
-            login_form: {
+            curBox: 'loginBox',
+            loginForm: {
                 username: '',
                 password: '',
             },
-            reg_form: {
+            registerForm: {
                 username: '',
                 password: '',
-                confirmPassword: '', // 再次确认密码
-                vercode: ''
+                confirmPassword: '',
+                telephone: '',
+                verificationCode: ''
             },
-            findback_form: {
-                userortel: '',
+            forgetForm: {
+                telephone: '',
                 password: '',
-                vercode:'',
+                confirmPassword: '',
+                verificationCode: '',
             },
-            login_rules: {
-                username: [
-                    {
+            loginRules: {
+                username: [{
                         required: true,
-                        message: '请输入电话',
+                        message: '请输入用户名',
                         trigger: 'blur'
-                    },
-                    {
-                        validator: checkMobile,
-                        trigger: 'blur'
-                    }
-                ],
+                }],
                 password: [ {
                         required: true,
                         message: '请输入密码',
                         trigger: 'blur'
                 }]
             },
-            reg_rules: {
-                username: [{ required: true, message: '请设置用户名', trigger: 'blur' }],
-                password: [{ required: true, message: '请设置密码', trigger: 'blur' }, { validator: checkPassword, trigger: 'blur' }],
-                telephone: [{ required: true, message: '请绑定手机号', trigger: 'blur' }, { validator: checkMobile, trigger: 'blur' }]
-            },
-            findback_rules: {
-                userortel: [
-                    { required: true, message: '请输入电话', trigger: 'blur' }, { validator: checkMobile, trigger: 'blur' }],
+            registerRules: {
+                username: [{
+                    required: true,
+                    message: '请设置用户名',
+                    trigger: 'blur'
+                }],
                 password: [
-                    { required: true, message: '请输入密码', trigger: 'blur' }]
+                    {
+                        required: true,
+                        message: '请设置密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: checkValidPassword,
+                        trigger: 'blur'
+                    }
+                ],
+                confirmPassword: [
+                    {
+                        required: true,
+                        message: '请再次输入密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: checkConfirmPassword,
+                        trigger: 'blur'
+                    }
+                ],
+                telephone: [
+                    {
+                        required: true,
+                        message: '请绑定手机号',
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: checkValidMobile,
+                        trigger: 'blur'
+                    }
+                ]
+            },
+            forgetRules: {
+                telephone: [
+                    {
+                        required: true,
+                        message: '请输入电话',
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: checkValidMobile,
+                        trigger: 'blur'
+                    }
+                ],
+                password: [
+                    {
+                        required: true,
+                        message: '请输入密码',
+                        trigger: 'blur'
+                    }
+                ],
+                confirmPassword: [
+                    {
+                        required: true,
+                        message: '请再次输入密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: checkConfirmPassword,
+                        trigger: 'blur'
+                    }
+                ]
             },
         }
     },
@@ -207,7 +279,7 @@ export default {
                 }
             })
         },
-        zhuce(){
+        register(){
             this.$refs.reg_form.validate(valid => {
                 if (!valid)
                     return;
@@ -245,20 +317,21 @@ export default {
                 }
             })
         },
-        change(id) {
-            this.target = id;
+        changeBox(box) {
+            console.log(box);
+            this.curBox = box;
         },
-        llogin() {
+        login() {
             this.$refs.login_form.validate(valid => {
                 if (!valid)
                     return;
                 else //验证通过再发送请求
-                    this.login();
+                    this.login1();
             })
 
 
         },
-        async login() {
+        async login1() {
 
             this.$axios.post("/api/user/login", this.login_form).then((res) => {
                 console.log(res.status);
@@ -354,7 +427,7 @@ export default {
     padding: 7px;
 }
 
-.login_box {
+.loginBox {
     height: 300px;
     width: 450px;
 
@@ -372,8 +445,18 @@ export default {
     transform: translate(-50%, -50%);
 }
 
-.reg_box {
-    height: 400px;
+.btns {
+    margin: 0px 0px 20px 0px;
+
+    background: #C2D9FF;
+
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.registerBox {
+    height: 420px;
     width: 450px;
 
     /* 设置窗口为毛玻璃效果 */
@@ -390,8 +473,8 @@ export default {
     transform: translate(-50%, -50%);
 }
 
-.forget_box {
-    height: 350px;
+.forgetBox {
+    height: 360px;
     width: 450px;
 
     /* 设置窗口为毛玻璃效果 */
@@ -415,34 +498,28 @@ export default {
 }
 
 .el-form-item {
-    width: 350px;
-    margin-left: 50px;
+    width: 90%;
 }
 
-.btns {
-    text-align: center;
-}
 
-.operate {
+.otherBoxes {
     text-align: center;
     color: #000;
-    opacity: .5;
+    opacity: 0.5;
     font-weight: 400;
     font-size: 16px;
     margin-left: 28px;
 }
 
-#op1 {
-    padding-left: 15px;
-    padding-right: 30px;
-    border-right: 1px solid #bdb9b9;
+#registerBoxBtn {
+    margin-left: 15px;
+    margin-right: 30px;
     cursor: pointer;
 }
 
-#op2 {
-    padding-left: 30px;
-    padding-right: 15px;
-    // border-right: 1px solid #e5e5e5;
+#forgetBoxBtn {
+    margin-left: 30px;
+    margin-right: 15px;
     cursor: pointer;
 }
 </style>

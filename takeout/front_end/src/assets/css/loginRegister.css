@@ -4,8 +4,9 @@
     line-height: 50px;
     font-size: larger;
     font-size: 23px;
-    color: #97D9E1;
-    padding: 7px;
+    color: #3cd2e2;
+
+    padding: 10px;
 }
 
 .btns {
@@ -13,13 +14,26 @@
 
     background: #C2D9FF;
 
+    color: rgb(0, 0, 0, 0.8);
+
     position: relative;
     left: 50%;
     transform: translateX(-50%);
 
-    font-family: '霞鹜文楷'
+    font-family: '霞鹜文楷';
+    font-size: 16px;
 }
 
 .el-form-item {
     width: 87%;
+}
+
+.loginBtn {
+    text-align: center;
+    opacity: 0.6;
+    font-size: 14px;
+    cursor:pointer;
+    span:hover{
+        color: #409EFF;
+    }
 }

@@ -46,5 +46,10 @@ export default {
     height: 100%;
     width: 100%;
     background-color: #FCFFE0;
+    background-image: url('../assets/images/background.png');
+    // 居中显示
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 </style>

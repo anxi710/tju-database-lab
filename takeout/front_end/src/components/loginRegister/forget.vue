@@ -30,9 +30,8 @@
                 <el-button class="btns" @click="doubleCheck()">修改</el-button>
             </div>
 
-            <div style="text-align: center;">
-                <span @click="handleClick('loginBox')"
-                    style="color: rgb(0, 0, 0, 0.5); font-size: 16px; cursor:pointer;">登录</span>
+            <div class="loginBtn">
+                <span @click="handleClick('loginBox')">登录</span>
             </div>
 
         </div>
@@ -159,11 +158,11 @@ export default {
 @import "@/assets/css/loginRegister.css";
 
 .forgetBox {
-    height: 350px;
+    height: 355px;
     width: 450px;
 
     /* 设置窗口为毛玻璃效果 */
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.82);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);

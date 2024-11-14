@@ -35,8 +35,8 @@
                 <el-button class="btns" @click="doubleCheck">注册</el-button>
             </div>
 
-            <div style="text-align: center;">
-                <span @click="handleClick('loginBox')" style="opacity: 0.5; font-size: 16px; cursor:pointer;">登录</span>
+            <div class="loginBtn">
+                <span @click="handleClick('loginBox')">登录</span>
             </div>
 
             <!-- 二次确认 -->
@@ -164,8 +164,8 @@ export default {
                                     message: '注册成功',
                                     type: 'success'
                                 })
-                                this.target = 1;
                                 // 页面变为登录页面
+                                this.$emit('changeBox', 'loginBox')
                             } else {
                                 this.$message({
                                     message: res.data.msg,
@@ -189,7 +189,7 @@ export default {
     width: 450px;
 
     /* 设置窗口为毛玻璃效果 */
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.82);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);

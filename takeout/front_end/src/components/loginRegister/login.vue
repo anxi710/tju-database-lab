@@ -25,7 +25,7 @@
 
             <div class="otherBoxes">
                 <span id="registerBoxBtn" @click="handleClick('registerBox')">注册</span>
-                <span style="border-left: 1px solid rgb(0, 0, 0, 0.5)"></span>
+                <span style="border-left: 1px solid rgb(0, 0, 0, 0.8)"></span>
                 <span id="forgetBoxBtn" @click="handleClick('forgetBox')">忘记密码</span>
             </div>
 
@@ -120,7 +120,7 @@ export default {
     width: 450px;
 
     /* 设置窗口为毛玻璃效果 */
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.82);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
@@ -135,11 +135,16 @@ export default {
 
 .otherBoxes {
     text-align: center;
-    color: #000;
-    opacity: 0.5;
+    color: black;
+    opacity: 0.6;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 14px;
     margin-left: 28px;
+
+    // 鼠标悬停时变蓝
+    span:hover {
+        color: #409EFF;
+    }
 }
 
 #registerBoxBtn {

@@ -18,5 +18,6 @@ aaxios.interceptors.request.use((config) => {
 
     return config;
 });
+
 //对外暴露
 export default aaxios;

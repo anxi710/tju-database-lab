@@ -6,7 +6,9 @@ import router from '@/router'
 
 //引入axios配置
 import axios from '@/api/index'
+
 Vue.use(ElementUI);
+
 Vue.config.productionTip = false
 
 //修改vue的原型链

@@ -2,6 +2,11 @@
 
     <div class="container">
 
+        <div class="bar">
+            <img src="../assets/images/logo2.png" height=35px alt="同济大学"
+                style="padding-left: 10px" />
+        </div>
+
         <!-- 登录表单 -->
         <loginBox v-if="curBox === 'loginBox'" @changeBox="changeBox" />
 
@@ -51,5 +56,13 @@ export default {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+}
+
+.bar {
+    width: 100%;
+    height: 55px;
+    background-color: white;
+    display: flex;
+    align-items: center;
 }
 </style>

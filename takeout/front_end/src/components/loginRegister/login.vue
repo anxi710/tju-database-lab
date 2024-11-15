@@ -78,35 +78,43 @@ export default {
             })
         },
         async login1() {
-            this.$axios.post("/api/user/login", this.loginForm).then((res) => {
-                console.log(res.status);
-                //200登录成功
-                if (res.data.code != 200) {
-                    return this.$message({
-                        message: res.data.msg,
-                        type: 'error '
-                    })
-                } else {
-                    this.$message({
-                        message: '登录成功',
-                        type: 'success'
-                    })
+            // this.$axios.post("/api/user/login", this.loginForm).then((res) => {
+            //     console.log(res.status);
+            //     //200登录成功
+            //     if (res.data.code != 200) {
+            //         return this.$message({
+            //             message: res.data.msg,
+            //             type: 'error '
+            //         })
+            //     } else {
+            //         this.$message({
+            //             message: '登录成功',
+            //             type: 'success'
+            //         })
 
-                    window.localStorage.setItem("token", res.data.token);
+            //         window.localStorage.setItem("token", res.data.token);
 
-                    if (res.data.role == 0)
-                        this.$router.push('/user')
-                    else
-                        this.$router.push('/manage')
-                }
-            }).catch(() => {
-                // console.log(res.response.data);
-                this.$message({
-                    message: "网络故障",
-                    type: 'error'
-                })
-            })
-
+            //         if (res.data.role == 0)
+            //             this.$router.push('/user')
+            //         else
+            //             this.$router.push('/manage')
+            //     }
+            // }).catch(() => {
+            //     // console.log(res.response.data);
+            //     this.$message({
+            //         message: "网络故障",
+            //         type: 'error'
+            //     })
+            // })
+            this.$message({
+                message: '登录成功',
+                type: 'success',
+                duration: 1000
+            });
+            // 暂停一秒后跳转
+            setTimeout(() => {
+                this.$router.push('/user')
+            }, 1000);
         }
     }
 }

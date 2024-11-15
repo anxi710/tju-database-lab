@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import LogRes from '@/views/loginRegister'
-import user from '@/components/MyUser'
+
+import loginRegister from '@/views/loginRegister'
+import userPage from '@/views/userPage'
 import manage from '@/components/MyManage'
+
 Vue.use(VueRouter)
+
 export default new VueRouter({
     mode:'history',
     routes: [
@@ -13,14 +16,14 @@ export default new VueRouter({
         },
         {
             path: '/login',
-            component: LogRes,
+            component: loginRegister,
             meta: {
-                title: "登录"
+                title: "登录页面"
             },
         },
         {
             path: '/user',
-            component: user,
+            component: userPage,
             meta: {
                 title: "用户界面"
             }

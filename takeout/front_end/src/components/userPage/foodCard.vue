@@ -1,47 +1,49 @@
 <!-- src/components/ProductCard.vue -->
 <template>
-    <el-card class="product-card">
-        <img :src="product.image" alt="product image" class="product-image" />
-        <div class="product-info">
-            <p class="product-name">{{ product.name }}</p>
-            <p class="product-price">¥{{ product.price }}</p>
-        </div>
-        <el-button type="primary" size="small">立即购买</el-button>
-    </el-card>
+    <div>
+        <el-card :body-style="{ padding: '5px' }" shadow="hover">
+            <img :src="food.image" class="image">
+            <div style="padding: 14px;">
+                <div>名称：{{ food.name }}</div>
+                <div>价格：{{ food.price }}</div>
+                <div>简介：{{ food.description }}</div>
+                <div class="bottom">
+                    <el-button type="text" class="button" @click="order">点单</el-button>
+                </div>
+            </div>
+        </el-card>
+    </div>
 </template>
 
 <script>
 export default {
     props: {
-        product: {
+        food: {
             type: Object,
-            required: true,
-        },
+            required: true
+        }
     },
+    methods: {
+        order() {
+            this.$emit('order', this.food);
+        }
+    }
 }
 </script>
 
 <style scoped>
-.product-card {
-    width: 220px;
-    margin: 10px;
+.bottom {
+    margin-top: 13px;
+    line-height: 12px;
 }
 
-.product-image {
+.button {
+    padding-bottom: 20px;
+    float: right;
+}
+
+.image {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
+    display: block;
 }
-
-.product-info {
-    margin: 10px 0;
-}
-
-.product-name {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.product-price {
-    color: #f56c6c;
-}</style>
+</style>

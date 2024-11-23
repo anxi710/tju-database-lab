@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
+
+//引入 element-ui
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+
 import router from '@/router'
 
 //引入axios配置

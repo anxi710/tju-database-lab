@@ -16,10 +16,8 @@ export default new VueRouter({
         },
         {
             path: '/login',
-            component: loginRegister,
-            meta: {
-                title: "登录页面"
-            },
+            name: 'login',
+            component: loginRegister
         },
         {
             path: '/user',

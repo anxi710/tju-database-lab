@@ -2,114 +2,216 @@
     <div id="container">
 
         <div class="header" style="text-align:left;">
-            <span style="font-size:19px; color: #3f3e3e;">商家：</span>
-            <span>
-                <el-autocomplete
-                    v-model="curShopName"
-                    :fetch-suggestions="querySearch"
-                    placeholder="请输入商家名"
-                    @select="handleSelect"
-                ></el-autocomplete>
-            </span>
+            <el-autocomplete
+                style="width: 280px;"
+                prefix-icon="el-icon-search"
+                v-model="curShopName"
+                :fetch-suggestions="querySearch"
+                placeholder="搜索店铺"
+                @select="handleSelect"
+                clearable
+            ></el-autocomplete>
         </div>
 
-        <div>
-            <div class="foodGrid">
-                <el-row v-for="o in 2" :key="o">
-                    <el-col style="padding:20px 10px 20px 30px; width:230px" v-for="o in 6" :key="o">
-                        <el-card :body-style="{ padding: '5px' }" shadow="hover">
-                            <img src="../../assets/images/logo.png" class="image">
-                            <div style="padding: 14px;">
-                                <span>test</span>
-                                <div class="bottom">
-                                    <el-button type="text" class="button">操作按钮</el-button>
-                                </div>
-                            </div>
-                        </el-card>
+        <div class="body" width="100%">
+            <div class="foodGrid" v-if="food.length > 0">
+                <el-row
+                    :gutter="15"
+                    type="flex"
+                    justify="center"
+                    style="flex-wrap: wrap; justify-content: flex-start; width:100%;"
+                >
+                    <el-col style="width: 340px; margin-top: 10px" v-for="i in food.length" :key="i">
+                        <foodCard :food="food[i - 1]" @order="order"></foodCard>
                     </el-col>
                 </el-row>
             </div>
-            <el-pagination
-                class="pagination"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page.sync="currentPage"
-                :page-size="18"
-                layout="prev, pager, next, jumper"
-                :total="totalFoodGroup">
-            </el-pagination>
 
-            <el-dialog title="订餐表单" :visible.sync="dialog" class="dialog" width="40%">
+            <el-dialog
+                title="订餐表"
+                :visible.sync="dialog"
+                class="dialog"
+                width="400px"
+                append-to-body
+                @close="handleCancel()"
+            >
                 <div>
-                    <el-form ref="form" :model="form" label-width="100px">
+                    <el-form ref="orderForm" :model="orderForm" label-width="100px">
                         <el-form-item label="店铺名称：">
-                            <span>{{ form.shop_name }}</span>
-                            <!-- <el-input v-model="form.shop_name"></el-input> -->
+                            {{ this.curShopName }}
                         </el-form-item>
 
-                        <el-form-item label="产品单价：">
-                            <span>{{ form.order_money }}</span>
-                            <!-- <el-input v-model="form.order_money"></el-input> -->
+                        <el-form-item label="食物名称：">
+                            {{ this.orderFood.name }}
                         </el-form-item>
 
-                        <el-form-item label="订餐方式：">
-                            <el-select v-model="form.order_way" placeholder="请选择订餐方式">
-                                <el-option label="人工订餐" shopName="人工订餐"></el-option>
-                                <el-option label="网上订餐" value="网上订餐"></el-option>
+                        <el-form-item label="价格：">
+                            {{ this.orderFood.price }}
+                        </el-form-item>
+
+                        <el-form-item label="取餐方式：">
+                            <el-select v-model="orderForm.orderWay" placeholder="请选择取餐方式">
+                                <el-option label="自提" value="自提"></el-option>
+                                <el-option label="外送" value="外送"></el-option>
                             </el-select>
                         </el-form-item>
 
-                        <!-- <el-form-item label="客户电话：">
-                            <el-input v-model="form.cons_phone"></el-input>
-                        </el-form-item> -->
-
                         <el-form-item label="客户姓名：">
-                            <el-input v-model="form.cons_name"></el-input>
+                            <el-input v-model="orderForm.consName"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="客户电话：">
+                            <el-input v-model="orderForm.consPhone"></el-input>
                         </el-form-item>
 
                         <el-form-item label="送餐地址：">
-                            <el-input v-model="form.cons_addre"></el-input>
+                            <el-input v-model="orderForm.consAddress"></el-input>
                         </el-form-item>
 
                     </el-form>
                     <div style="text-align: center;">
-                        <el-button type="primary" @click="add">
-                            提交
-                        </el-button>
+                        <el-button type="primary" @click="handleConfirm">提交</el-button>
+                        <el-button @click="handleCancel()">取消</el-button>
                     </div>
                 </div>
             </el-dialog>
+
         </div>
     </div>
 </template>
 
 <script>
-// import foodCard from '@/components/userPage/foodCard.vue'
+import foodCard from '@/components/userPage/foodCard.vue'
 
 export default {
     name: "shopFood",
     components: {
-        // foodCard
+        foodCard
     },
     data() {
         return {
             curShopName: '',
             shops: [],
-            tableData: [],
             dialog: false,
-            form: {
-                shop_name: '',
-                order_money: '',
-                order_way: '',
-                // cons_phone: '',
-                cons_name: '',
-                cons_addre: '',
+            orderForm: {
+                shopName: '',
+                foodName: '',
+                orderPrice: '',
+                orderWay: '',
+                consName: '',
+                consPhone: '',
+                consAddress: ''
             },
-            totalFoodGroup: 10
+            food: [
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                },
+                {
+                    name: '食物名',
+                    price: '18.0',
+                    description: '精选黄牛肉........',
+                    image: 'https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0'
+                }
+            ],
+            orderFood: {}
         }
     },
     methods: {
-        getdata() {
+        getData() {
+            // 获取商家数据
             this.$axios.get("/api/user/shop").then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
@@ -117,12 +219,13 @@ export default {
                 }
             })
         },
-        showdia(row) {
-            this.form.shop_name = row.shop_name;
-            this.form.order_money = row.price;
-            this.dialog = true;
-        },
-        add() {
+
+        handleConfirm() { // 确定点单处理逻辑
+            // 完善表单信息
+            this.orderForm.shopName = this.curShopName;
+            this.orderForm.foodName = this.orderFood.name;
+            this.orderForm.orderPrice = this.orderFood.price;
+            // 提交表单
             this.$axios.post("/api/user/addorder", this.form).then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
@@ -136,17 +239,33 @@ export default {
             })
         },
 
+        handleCancel() { // 取消点单处理逻辑
+            // 关闭弹窗
+            this.dialog = false;
+            // 清空表单数据
+            this.orderForm = {
+                shopName: '',
+                orderMoney: '',
+                orderWay: '',
+                consName: '',
+                consPhone: '',
+                consAddress: ''
+            }
+        },
+
         querySearch(queryString, cb) {
             var shops = this.shops;
             var results = queryString ? shops.filter(this.createFilter(queryString)) : shops;
             // 调用 callback 返回建议列表的数据
             cb(results);
         },
+
         createFilter(queryString) {
             return (shop) => {
                 return (shop.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
             };
         },
+
         loadAll() {
             return [
                 { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
@@ -199,11 +318,19 @@ export default {
                 { "value": "南拳妈妈龙虾盖浇饭", "address": "普陀区金沙江路1699号鑫乐惠美食广场A13" }
             ];
         },
+
         handleSelect(item) {
             console.log(item.value);
             console.log(this.curShopName)
+        },
+
+        order(food) {
+            console.log(food);
+            this.orderFood = food;
+            this.dialog = true;
         }
     },
+
     mounted() {
         //this.getdata();
         this.shops = this.loadAll();
@@ -222,38 +349,10 @@ export default {
     border-bottom: 1px solid #e3e3e3;
 }
 
-.body {
-    width: 62%;
-    margin: auto;
-    margin-top: 30px;
-}
-
-.bottom {
-    margin-top: 13px;
-    line-height: 12px;
-}
-
-.button {
-    padding-bottom: 20px;
-    float: right;
-}
-
-.image {
-    width: 100%;
-    display: block;
-}
-
-.pagination {
-    /* 在页面底部居中显示分页按钮 */
-    position:absolute;
-    bottom: 20px;
-    left: 50%;
-}
-
 .foodGrid {
     display: flex;
-    flex-wrap: wrap; /* 自动换行 */
-    gap: 20px; /* 卡片之间的间距 */
+    min-height: 100vh; /* 确保容器占满视口高度 */
+    padding: 10px; /* 避免卡片贴边 */
 }
 
 </style>

@@ -2,7 +2,7 @@
     <!-- 注册表单 -->
     <div class="registerBox">
 
-        <div class="head">同舟共济外卖平台</div>
+        <div class="head">黄渡外卖</div>
 
         <div>
 

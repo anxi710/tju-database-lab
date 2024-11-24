@@ -1,36 +1,46 @@
 <template>
     <el-container>
+
         <el-header class="header">
             个人信息
         </el-header>
+
         <el-main class="body">
-            <el-form ref="form" :model="form" label-width="20%" id="selectForm">
-                <el-form-item label="用户名：" prop="dispatcher_id">
-                    <span>{{ form.user_name }}</span>
-                    <!-- <el-input v-model="form.user_name"></el-input> -->
+            <el-form ref="form" :model="form" label-width="20%" label-position="left" :disabled="modifyOrNot">
+                <el-form-item label="头像" prop="profilePhoto">
+                    <el-avatar
+                        shape="square"
+                        :size="50"
+                        :src="personalInfoForm.profilePhotoURL"
+                        icon="el-icon-user-solid">
+                    </el-avatar>
                 </el-form-item>
-                <el-form-item label="姓名：" prop="dispatcher_name">
-                    <span>{{ form.real_name }}</span>
-                    <!-- <el-input v-model="form.real_name"></el-input> -->
+                <el-form-item label="用户名" prop="userName">
+                    <span>{{ personalInfoForm.userName }}</span>
                 </el-form-item>
-                <el-form-item label="性别：" prop="dispatcher_phone">
-                    <span>{{ form.sex }}</span>
-                    <!-- <el-input v-model="form.sex"></el-input> -->
+                <el-form-item label="姓名" prop="realName">
+                    <el-input v-model="personalInfoForm.realName" style="width: 150px"></el-input>
                 </el-form-item>
-                <el-form-item label="电话：" prop="dispatcher_phone">
-                    <span>{{ form.phone }}</span>
-                    <!-- <el-input v-model="form.phone"></el-input> -->
+                <el-form-item label="性别" prop="sex">
+                    <el-select v-model="personalInfoForm.sex" style="width: 150px">
+                        <el-option label="男" value="男"></el-option>
+                        <el-option label="女" value="女"></el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="常用地址：" prop="dispatcher_phone">
-                    <span>{{ form.mail }}</span>
-                    <!-- <el-input v-model="form.mail"></el-input> -->
+                <el-form-item label="电话" prop="phone">
+                    <el-input v-model="personalInfoForm.phone" style="width: 220px"></el-input>
                 </el-form-item>
-                <el-form-item label="个性签名：" prop="dispatcher_phone">
-                    <span>{{ form.age }}</span>
-                    <!-- <el-input v-model="form.age"></el-input> -->
+                <el-form-item label="常用地址" prop="usualAddress">
+                    <el-input v-model="personalInfoForm.usualAddress" style="width:220px"></el-input>
                 </el-form-item>
             </el-form>
+
+            <div style="padding-left:80px; padding-top: 10px">
+                <el-button type="primary" @click="modify()">开始修改</el-button>
+                <el-button type="primary" @click="confirm()">确认修改</el-button>
+            </div>
         </el-main>
+
     </el-container>
 </template>
 
@@ -38,14 +48,15 @@
 export default {
     data() {
         return {
-            form: {
-                real_name: '',
-                sex: '',
-                age: '',
-                mail: '',
-                phone: '',
-                user_name: '',
-            }
+            personalInfoForm: {
+                profilePhotoURL: 'https://avatars.githubusercontent.com/u/77193761?v=4',
+                userName: 'Anxi',
+                realName: '徐先生',
+                sex: '男',
+                phone: '1872065088x',
+                usualAddress: '友园四号楼'
+            },
+            modifyOrNot: true
         }
     },
     methods: {
@@ -61,7 +72,10 @@ export default {
                     this.form.user_name = res.data.data.user_name;
                 }
             })
-        }
+        },
+        modify() {
+            this.modifyOrNot = !this.modifyOrNot
+        },
     },
     mounted() {
         // this.getdata()
@@ -79,11 +93,10 @@ export default {
 }
 
 .body {
-    width: 40%;
+    width: 500px;
     /* margin: auto; */
     margin-top: 30px;
     margin-left: 30px;
-
 }
 
 #selectForm.el-form-item__label {

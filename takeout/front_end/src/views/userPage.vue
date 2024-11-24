@@ -13,7 +13,9 @@
 
                 <p id="greetings">😃Hi {{ this.username }} ~ 今天吃点什么？😉</p>
 
-                <p id="mode">用户模式</p>
+                <p id="profilePhoto">
+                    <el-avatar size="medium" :src="profilePhotoURL" icon="el-icon-user-solid"></el-avatar>
+                </p>
             </el-header>
 
             <el-container>
@@ -39,20 +41,6 @@
                         </el-submenu>
 
                         <el-menu-item index="5">
-                            <template slot="title">
-                                <i class="el-icon-star-off"></i>
-                                <span class="menuItem">收藏</span>
-                            </template>
-                        </el-menu-item>
-
-                        <el-menu-item index="6">
-                            <template slot="title">
-                                <i class="el-icon-chat-line-square"></i>
-                                <span class="menuItem">评论中心</span>
-                            </template>
-                        </el-menu-item>
-
-                        <el-menu-item index="7">
                             <template slot="title">
                                 <i class="el-icon-house"></i>
                                 <span class="menuItem">个人中心</span>
@@ -80,7 +68,7 @@
                     </div>
 
 
-                    <div id="personalCenter" v-else-if="active == 7">
+                    <div id="personalCenter" v-else-if="active == 5">
                         <personalCenter></personalCenter>
                     </div>
 
@@ -113,6 +101,7 @@ export default {
         return {
             username: 'Anxi',
             active: 1,
+            profilePhotoURL: 'https://avatars.githubusercontent.com/u/77191763'
         };
     },
     methods: {
@@ -147,16 +136,14 @@ export default {
     /* 定位在窗口右侧 */
     position: absolute;
     right: 100px;
+
+    text-align: center;
 }
 
-#mode {
-    font-size: 14px;
-    color: rgb(0, 0, 0, 0.5);
-
+#profilePhoto {
     /* 定位在窗口右侧 */
     position: absolute;
     right: 10px;
-
     padding-right: 10px;
 }
 

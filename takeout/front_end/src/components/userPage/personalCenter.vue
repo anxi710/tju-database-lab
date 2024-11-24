@@ -1,21 +1,17 @@
 <template>
-    <div>
-        <div class="header">
+    <el-container>
+        <el-header class="header">
             个人信息
-        </div>
-        <div class="body">
+        </el-header>
+        <el-main class="body">
             <el-form ref="form" :model="form" label-width="20%" id="selectForm">
                 <el-form-item label="用户名：" prop="dispatcher_id">
                     <span>{{ form.user_name }}</span>
                     <!-- <el-input v-model="form.user_name"></el-input> -->
                 </el-form-item>
-                <el-form-item label="真实姓名：" prop="dispatcher_name">
+                <el-form-item label="姓名：" prop="dispatcher_name">
                     <span>{{ form.real_name }}</span>
                     <!-- <el-input v-model="form.real_name"></el-input> -->
-                </el-form-item>
-                <el-form-item label="年龄：" prop="dispatcher_phone">
-                    <span>{{ form.age }}</span>
-                    <!-- <el-input v-model="form.age"></el-input> -->
                 </el-form-item>
                 <el-form-item label="性别：" prop="dispatcher_phone">
                     <span>{{ form.sex }}</span>
@@ -25,20 +21,21 @@
                     <span>{{ form.phone }}</span>
                     <!-- <el-input v-model="form.phone"></el-input> -->
                 </el-form-item>
-                <el-form-item label="邮箱：" prop="dispatcher_phone">
+                <el-form-item label="常用地址：" prop="dispatcher_phone">
                     <span>{{ form.mail }}</span>
                     <!-- <el-input v-model="form.mail"></el-input> -->
                 </el-form-item>
+                <el-form-item label="个性签名：" prop="dispatcher_phone">
+                    <span>{{ form.age }}</span>
+                    <!-- <el-input v-model="form.age"></el-input> -->
+                </el-form-item>
             </el-form>
-        </div>
-    </div>
+        </el-main>
+    </el-container>
 </template>
 
 <script>
 export default {
-    created() {
-        this.getdata()
-    },
     data() {
         return {
             form: {
@@ -66,17 +63,18 @@ export default {
             })
         }
     },
+    mounted() {
+        // this.getdata()
+    }
 }
 </script>
 
 <style scoped>
 .header {
-    width: 100%;
-    height: 10%;
+    line-height: 45px;
     text-align: center;
-    line-height: 64px;
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 600;
     border-bottom: 1px solid #e3e3e3;
 }
 

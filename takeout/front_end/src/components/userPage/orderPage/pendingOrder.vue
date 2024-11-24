@@ -1,13 +1,13 @@
 <template>
-    <div>
+    <el-container>
 
-        <div class="header">
-            已完成订单
-        </div>
+        <el-header class="header">
+            待收货订单
+        </el-header>
 
-        <div class="body">
+        <el-main class="body">
 
-            <el-table :data="tableData" style="width: 100%" class="table" stripe
+            <el-table :data="tableData" style="width: 100%; font-size: 16px" class="table" stripe
                 :default-sort="{ prop: 'orderTime', order: 'descending' }" show-summary>
                 <el-table-column prop="orderTime" label="订餐时间" sortable />
                 <el-table-column prop="shopName" label="店铺名称" />
@@ -18,19 +18,19 @@
                 <el-table-column prop="consAddress" label="送餐地址" />
             </el-table>
 
-        </div>
+        </el-main>
 
-    </div>
+    </el-container>
 </template>
 
 <script>
 export default {
-    name: 'finishedOrder',
+    name: 'pendingOrder',
     data() {
         return {
             tableData: [
                 {
-                    orderTime: '2021-06-01 12:00:00',
+                    orderTime: '06-01 12:00',
                     shopName: '麦当劳',
                     foodName: '麦辣鸡腿堡',
                     orderPrice: 18,
@@ -39,7 +39,7 @@ export default {
                     consAddress: '广东省广州市天河区'
                 },
                 {
-                    orderTime: '2021-06-01 12:00:00',
+                    orderTime: '06-01 12:00',
                     shopName: '麦当劳',
                     foodName: '麦辣鸡腿堡',
                     orderPrice: 18,
@@ -48,7 +48,7 @@ export default {
                     consAddress: '广东省广州市天河区'
                 },
                 {
-                    orderTime: '2021-06-01 12:00:00',
+                    orderTime: '06-01 12:00',
                     shopName: '麦当劳',
                     foodName: '麦辣鸡腿堡',
                     orderPrice: 18,
@@ -57,7 +57,16 @@ export default {
                     consAddress: '广东省广州市天河区'
                 },
                 {
-                    orderTime: '2021-06-01 12:00:00',
+                    orderTime: '06-01 12:00',
+                    shopName: '麦当劳',
+                    foodName: '麦辣鸡腿堡',
+                    orderPrice: 18,
+                    orderWay: '外卖',
+                    consName: '张三',
+                    consAddress: '广东省广州市天河区'
+                },
+                {
+                    orderTime: '06-01 12:00',
                     shopName: '麦当劳',
                     foodName: '麦辣鸡腿堡',
                     orderPrice: 18,
@@ -86,19 +95,16 @@ export default {
 
 <style scoped>
 .header {
-    width: 100%;
-    height: 10%;
+    line-height: 45px;
     text-align: center;
-    line-height: 64px;
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 600;
     border-bottom: 1px solid #e3e3e3;
 }
 
 .body {
-
-    width: 68%;
+    width: 90%;
     margin: auto;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 </style>

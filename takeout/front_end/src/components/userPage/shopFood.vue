@@ -1,7 +1,8 @@
 <template>
-    <div id="container">
 
-        <div class="header" style="text-align:left;">
+    <el-container>
+
+        <el-header class="header">
             <el-autocomplete
                 style="width: 280px;"
                 prefix-icon="el-icon-search"
@@ -11,21 +12,20 @@
                 @select="handleSelect"
                 clearable
             ></el-autocomplete>
-        </div>
+        </el-header>
 
-        <div class="body" width="100%">
-            <div class="foodGrid" v-if="food.length > 0">
-                <el-row
-                    :gutter="15"
-                    type="flex"
-                    justify="center"
-                    style="flex-wrap: wrap; justify-content: flex-start; width:100%;"
-                >
-                    <el-col style="width: 340px; margin-top: 10px" v-for="i in food.length" :key="i">
-                        <foodCard :food="food[i - 1]" @order="order"></foodCard>
-                    </el-col>
-                </el-row>
-            </div>
+        <el-main>
+            <el-row
+                v-if="food.length > 0"
+                :gutter="10"
+                type="flex"
+                justify="center"
+                style="flex-wrap: wrap; justify-content: flex-start; width:100%;"
+            >
+                <el-col style="width: 330px; margin-top: 10px" v-for="i in food.length" :key="i">
+                    <foodCard :food="food[i - 1]" @order="order"></foodCard>
+                </el-col>
+            </el-row>
 
             <el-dialog
                 title="订餐表"
@@ -75,9 +75,9 @@
                     </div>
                 </div>
             </el-dialog>
+        </el-main>
 
-        </div>
-    </div>
+</el-container>
 </template>
 
 <script>
@@ -342,17 +342,8 @@ export default {
 .header {
     width: 100%;
     height: 10%;
-    text-align: center;
-    line-height: 64px;
-    font-size: 20px;
-    font-weight: 800;
+    text-align: left;
     border-bottom: 1px solid #e3e3e3;
-}
-
-.foodGrid {
-    display: flex;
-    min-height: 100vh; /* 确保容器占满视口高度 */
-    padding: 10px; /* 避免卡片贴边 */
 }
 
 </style>

@@ -78,6 +78,12 @@
                     <div id="unfilledOrder" v-else-if="active == 4">
                         <unfilledOrder></unfilledOrder>
                     </div>
+
+
+                    <div id="personalCenter" v-else-if="active == 7">
+                        <personalCenter></personalCenter>
+                    </div>
+
                 </el-main>
             </el-container>
 
@@ -88,16 +94,20 @@
 
 <script>
 import shopFood from '@/components/userPage/shopFood.vue'
-import pendingOrder from '@/components/userPage/pendingOrder.vue'
-import finishedOrder from '@/components/userPage/finishedOrder.vue'
-import unfilledOrder from '@/components/userPage/unfilledOrder.vue'
+import pendingOrder from '@/components/userPage/orderPage/pendingOrder.vue'
+import finishedOrder from '@/components/userPage/orderPage/finishedOrder.vue'
+import unfilledOrder from '@/components/userPage/orderPage/unfilledOrder.vue'
+
+import personalCenter from '@/components/userPage/personalCenter.vue'
 
 export default {
     components: {
         shopFood,
         pendingOrder,
         finishedOrder,
-        unfilledOrder
+        unfilledOrder,
+
+        personalCenter
     },
     data() {
         return {

@@ -1,17 +1,19 @@
 <template>
-    <div>
-        <div class="header">
-            店铺管理
-        </div>
-        <div class="body">
+    <el-container>
+
+        <el-header class="header">
+            美食管理
+        </el-header>
+
+        <el-main class="body">
             <el-table :data="tableData" style="width: 89%" class="table">
-                <el-table-column prop="shop_name" label="店铺名称" width="200" align="center">
+                <el-table-column prop="shop_name" label="店铺名称" width="200">
                 </el-table-column>
-                <el-table-column prop="price" label="产品单价" width="200" align="center">
+                <el-table-column prop="price" label="产品单价" width="200">
                 </el-table-column>
-                <el-table-column prop="sale" label="月销量" width="200" align="center">
+                <el-table-column prop="sale" label="月销量" width="200">
                 </el-table-column>
-                <el-table-column prop="operate" label="操作" width="200" align="center">
+                <el-table-column prop="operate" label="操作" width="200">
                     <template slot-scope="scope">
                         <el-button size="small" type="warning" @click="showdia_chg(scope.row)">修改
                         </el-button>
@@ -20,7 +22,7 @@
                         </el-button>
                     </template>
                 </el-table-column>
-                <el-table-column width="120" align="center">
+                <el-table-column width="120">
                     <template slot="header">
                         <el-button icon="el-icon-plus" size="small" type="success" @click="showdia_add()">添加店铺
                         </el-button>
@@ -75,15 +77,14 @@
                     </el-button>
                 </div>
             </el-dialog>
-        </div>
-    </div>
+        </el-main>
+
+    </el-container>
 </template>
 
 <script>
 export default {
-    created() {
-        this.getdata()
-    },
+    name: "manageFood",
     data() {
         return {
             tableData: [],
@@ -113,12 +114,12 @@ export default {
     },
     methods: {
         getdata() {
-            this.$axios.get("/api/manager/shop").then((res) => {
-                console.log(res.data);
-                if (res.data.status == 200) {
-                    this.tableData = res.data.tabledata;
-                }
-            })
+            // this.$axios.get("/api/manager/shop").then((res) => {
+            //     console.log(res.data);
+            //     if (res.data.status == 200) {
+            //         this.tableData = res.data.tabledata;
+            //     }
+            // })
         },
         showdia_add() {
             this.dia_add = true;
@@ -183,25 +184,25 @@ export default {
                 }
             })
         }
+    },
+    mounted() {
+        // this.getdata();
     }
 }
 </script>
 
 <style scoped>
 .header {
-    width: 100%;
-    height: 10%;
+    line-height: 45px;
     text-align: center;
-    line-height: 64px;
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 600;
     border-bottom: 1px solid #e3e3e3;
 }
 
 .body {
-
-    width: 80%;
+    width: 90%;
     margin: auto;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 </style>

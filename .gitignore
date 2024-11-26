@@ -5,3 +5,4 @@ reference2/
 *.log
 takeout/.vscode
 takeout/back_end.zip
+takeout/back_end/__pychache__

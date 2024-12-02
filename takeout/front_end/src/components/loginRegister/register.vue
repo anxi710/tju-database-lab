@@ -21,7 +21,7 @@
 
                 <el-form-item prop="password">
                     <el-input v-model="registerForm.password" show-password spellcheck="false"
-                        placeholder="6 - 12 位大小写字母或数字" prefix-icon="el-icon-lock" />
+                        placeholder="6 - 12 位字符" prefix-icon="el-icon-lock" />
                 </el-form-item>
 
                 <el-form-item prop="confirmPassword">
@@ -62,7 +62,7 @@ export default {
     name: 'registerBox',
     data() {
         var checkConfirmPassword = (rule, value, callback) => {
-            if (value == this.registerForm.password) {
+            if (value === this.registerForm.password) {
                 return callback();
             }
             callback(new Error('两次输入密码不一致!'));
@@ -141,39 +141,49 @@ export default {
             this.register();
         },
         register() {
-            this.$refs.reg_form.validate(valid => {
+            this.$refs.registerForm.validate(valid => {
                 if (!valid)
                     return;
                 else {
-                    if (this.reg_form.vercode == '')
-                        return;
-                    else {
-                        this.$axios.request({
-                            method: 'POST',
-                            url: '/api/user/register/test',
-                            data: {
-                                username: this.reg_form.username,
-                                password: this.reg_form.password,
-                                vercode: this.reg_form.vercode,
-                                telephone: this.reg_form.telephone
-                            }
-                        }).then((res) => {
-                            // console.log(res.status);
-                            if (res.data.status == 200) {
-                                this.$message({
+                    this.$axios.post('/api/user/register', {
+                        username: this.registerForm.username,
+                        telephone: this.registerForm.telephone,
+                        password: this.registerForm.password,
+                        role: 'user'
+                    }).then((res) => {
+                        console.log(res.data.code);
+                        if (res.data.code == 200) {
+                            if (res.data.msg == '用户名已存在') {
+                                this.$notify.error({
+                                    title: '错误',
+                                    message: '用户名已存在'
+                                })
+                            } else if (res.data.msg == '手机号已注册') {
+                                this.$notify.error({
+                                    title: '错误',
+                                    message: '手机号已注册'
+                                })
+                            } else {
+                                console.log("注册成功");
+
+                                this.$notify({
+                                    title: '成功',
                                     message: '注册成功',
-                                    type: 'success'
+                                    type: 'success',
+                                    duration: 1000
                                 })
                                 // 页面变为登录页面
-                                this.$emit('changeBox', 'loginBox')
-                            } else {
-                                this.$message({
-                                    message: res.data.msg,
-                                    type: 'error'
-                                })
+                                setTimeout(() => {
+                                    this.$emit('changeBox', 'loginBox')
+                                }, 1000)
                             }
-                        })
-                    }
+                        } else {
+                            this.$notify.error({
+                                title: '错误',
+                                message: res.data.msg
+                            })
+                        }
+                    })
                 }
             })
         }

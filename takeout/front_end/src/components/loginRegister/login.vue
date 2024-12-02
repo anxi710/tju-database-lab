@@ -78,43 +78,46 @@ export default {
             })
         },
         async login1() {
-            // this.$axios.post("/api/user/login", this.loginForm).then((res) => {
-            //     console.log(res.status);
-            //     //200登录成功
-            //     if (res.data.code != 200) {
-            //         return this.$message({
-            //             message: res.data.msg,
-            //             type: 'error '
-            //         })
-            //     } else {
-            //         this.$message({
-            //             message: '登录成功',
-            //             type: 'success'
-            //         })
+            this.$axios.post("/api/user/login", this.loginForm).then((res) => {
+                console.log(res.status);
+                // 200 登录成功
+                if (res.data.code != 200) {
+                    return this.$notify({
+                        title: '错误',
+                        message: res.data.msg,
+                        type: 'error',
+                        duration: 3000
+                    })
+                } else {
+                    this.$notify({
+                        title: '成功',
+                        message: '登录成功',
+                        type: 'success',
+                        duration: 1000
+                    })
 
-            //         window.localStorage.setItem("token", res.data.token);
+                    // 将用户名和角色存入localStorage
+                    window.localStorage.setItem('username', this.loginForm.username);
+                    window.localStorage.setItem('role', res.data.role);
 
-            //         if (res.data.role == 0)
-            //             this.$router.push('/user')
-            //         else
-            //             this.$router.push('/manage')
-            //     }
-            // }).catch(() => {
-            //     // console.log(res.response.data);
-            //     this.$message({
-            //         message: "网络故障",
-            //         type: 'error'
-            //     })
-            // })
-            this.$message({
-                message: '登录成功',
-                type: 'success',
-                duration: 1000
-            });
-            // 暂停一秒后跳转
-            setTimeout(() => {
-                this.$router.push('/user')
-            }, 1000);
+                    console.log(window.localStorage.getItem('username'));
+                    console.log(window.localStorage.getItem('role'));
+
+                    // 暂停一秒后跳转
+                    setTimeout(() => {
+                        if (res.data.role == 'user')
+                            this.$router.push('/user')
+                        else
+                            this.$router.push('/admin')
+                    }, 1000);
+                }
+            }).catch(() => {
+                // console.log(res.response.data);
+                this.$notify.error({
+                    title: '错误',
+                    message: "网络故障"
+                })
+            })
         }
     }
 }

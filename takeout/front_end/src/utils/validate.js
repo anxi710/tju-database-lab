@@ -1,9 +1,9 @@
 export function checkValidPassword(rule, value, callback) {
-    const regexRule = /^[a-zA-Z1-9]{6,12}$/;
+    const regexRule = /^.{6,12}$/
     if (regexRule.test(value)) {
         return callback() // 合法的密码
     }
-    callback(new Error('密码必须由 6 - 12 位大小写字母或数字组成'))
+    callback(new Error('密码必须由 6 - 12 位字符组成'))
 }
 
 export function checkValidMobile(rule, value, callback) {

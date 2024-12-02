@@ -1,27 +1,22 @@
 # import caching as caching
-from flask import Flask, jsonify, request
+import os
+from flask import Flask, jsonify, request, send_from_directory
+from werkzeug.utils import secure_filename
 from sqlalchemy import text
 
 from config import BaseConfig
 from flask_sqlalchemy import SQLAlchemy
 import auth
-import json
-import random
 import datetime
-from redis import StrictRedis
-
-# 创建redis对象
-redis_store = StrictRedis(host=BaseConfig.REDIS_HOST, port=BaseConfig.REDIS_PORT, decode_responses=True)
 
 # 跨域
-from flask_cors import CORS
 from flask_cors import cross_origin
 
 app = Flask(__name__)
 
 # 添加配置数据库
 app.config.from_object(BaseConfig)
-# 初始化拓展,app到数据库的ORM映射
+# 初始化拓展，app 到数据库的 ORM 映射
 db = SQLAlchemy(app)
 
 # 检查数据库连接是否成功
@@ -30,28 +25,135 @@ with app.app_context():
         rs = conn.execute(text("select 1"))
         print(rs.fetchone())
 
+# 上传文件的保存目录
+UPLOAD_FOLDER = 'uploads'
 
+# 配置 Flask 上传目录
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # 用户登录
 @app.route("/api/user/login", methods=["POST"])
 @cross_origin()
 def user_login():
     print(request.json)
-    userortel = request.json.get("userortel").strip()
+    username = request.json.get("username").strip()
     password = request.json.get("password").strip()
-    sql = ('select * ' \
-           + 'from user ' \
-           + 'where telephone = "{0}" and password = "{1}"').format(userortel, password)
+
+    sql = f'select * from user where username = "{username}" and password = "{password}"'
+
     data = db.session.execute(text(sql)).first()
+
     print(data)
+
     if data != None:
-        user = {'id': data[0], 'username': data[1], 'password': data[2], 'telephone': data[3]}
-        # 生成token
-        token = auth.encode_func(user)
-        print(token)
-        return jsonify({"code": 200, "msg": "登录成功", "token": token, "role": data[4]})
+        user = {'uid': data[0], 'username': data[1], 'telephone': data[2],
+                'password': data[3], 'role': data[4]}
+
+        print("user info: ", user)
+
+        return jsonify({"code": 200, "msg": "登录成功", "role": data[4]})
     else:
         return jsonify({"code": 1000, "msg": "用户名或密码错误"})
+
+# 用户注册
+@app.route("/api/user/register", methods=["POST"])
+@cross_origin()
+def user_register():
+    print("开始处理注册请求")
+
+    print("请求数据为：", request.json)
+    username = request.json.get("username").strip()
+    password = request.json.get("password").strip()
+    telephone = request.json.get("telephone").strip()
+    role = request.json.get("role").strip()
+
+    sql1 = f'SELECT * FROM user WHERE username = "{username}"'
+    sql2 = f'SELECT * FROM user WHERE telephone = "{telephone}"'
+
+    data1 = db.session.execute(text(sql1)).first()
+    data2 = db.session.execute(text(sql2)).first()
+
+    print(data1)
+    print(data2)
+
+    if data1 != None:
+        print("注册请求处理完成")
+        return jsonify({"code": 1000, "msg": "用户名已存在"})
+    elif data2 != None:
+        print("注册请求处理完成")
+        return jsonify({"code": 1000, "msg": "手机号已注册"})
+    else:
+        sql = f'INSERT INTO user(username, telephone, password, role) VALUES ("{username}", "{telephone}", "{password}", "{role}")'
+        db.session.execute(text(sql))
+        db.session.commit()
+        print("注册请求处理完成")
+        return jsonify({"code": 200, "msg": "注册成功"})
+
+# 修改密码
+@app.route("/api/user/forget", methods=["POST"])
+@cross_origin()
+def user_forget():
+    print("开始处理忘记密码请求")
+
+    print("请求数据为：", request.json)
+    telephone = request.json.get("telephone").strip()
+    password = request.json.get("password").strip()
+
+    # 判断手机号是否存在
+    sql = f'SELECT * FROM user WHERE telephone = "{telephone}"'
+    data = db.session.execute(text(sql)).first()
+
+    if data == None:
+        print("忘记密码请求处理完成")
+        return jsonify({"code": 1000, "msg": "手机号不存在"})
+
+    sql = f'UPDATE user SET password = "{password}" WHERE telephone = "{telephone}"'
+
+    db.session.execute(text(sql))
+    db.session.commit()
+    print("忘记密码请求处理完成")
+    return jsonify({"code": 200, "msg": "修改成功"})
+
+# 上传头像
+@app.route('/api/user/upload', methods=['POST'])
+@cross_origin()
+def upload_file():
+    print("开始处理上传文件请求")
+    # 检查请求中是否包含文件
+    if 'file' not in request.files:
+        return jsonify({'message': '没有文件部分'}), 400
+
+    file = request.files['file']
+
+    # 如果用户没有选择文件，浏览器提交的是空的文件
+    if file.filename == '':
+        return jsonify({'message': '没有选择文件'}), 400
+
+    # 获取文件类型
+    file_type = file.content_type.split('/')[1]
+
+    # 获取安全的文件名
+    filename = secure_filename(f'profilePhoto.{file_type}') # username 是唯一的！
+
+    # 如果上传文件夹不存在，则创建它
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+
+    # 保存文件到服务器
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(file_path)
+
+    # 返回保存后的文件 URL
+    file_url = f'http://localhost:5000/uploads/{filename}'
+
+    return jsonify({'url': file_url}), 200
+
+# 提供静态文件服务，使得可以通过浏览器访问上传的文件
+@app.route('/uploads/<filename>')
+@cross_origin()
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 
 # 用户界面获取店铺信息
 @app.route("/api/user/shop", methods=["GET"])
@@ -66,7 +168,6 @@ def user_get_shop():
     print(Data)
     # return jsonify({"status":"200", "tabledata": Data})
     return jsonify(status=200, tabledata=Data)
-
 
 # 下订单
 @app.route("/api/user/addorder", methods=["POST"])
@@ -373,6 +474,6 @@ def manager_sended():
                        cons_name=data[i][5], cons_addre=data[i][6], disp_id=data[i][7], deliver_time=data[i][8])
             Data.append(dic)
         return jsonify(status=200, tabledata=Data)
+
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port='5000')
-    # 开启了debug模式

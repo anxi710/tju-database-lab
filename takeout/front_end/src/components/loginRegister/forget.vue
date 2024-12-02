@@ -134,19 +134,28 @@ export default {
 
         // 提交修改密码请求
         forget() {
-            this.$axios.post("/api/user/forget", this.forgetForm).then((res) => {
+            this.$axios.post("/api/user/forget", {
+                telephone: this.forgetForm.telephone,
+                password: this.forgetForm.password
+            }).then((res) => {
                 console.log(res.status);
-                //200修改成功
+                // 200 修改成功
                 if (res.data.code != 200) {
-                    return this.$message({
-                        message: res.data.msg,
-                        type: 'error '
+                    return this.$notify.error({
+                        title: '错误',
+                        message: res.data.msg
                     })
                 } else {
-                    this.$message({
+                    this.$notify({
+                        title: '成功',
                         message: res.data.msg,
-                        type: 'success'
+                        type: 'success',
+                        duration: 1000
                     })
+
+                    setTimeout(() => {
+                        this.$emit('changeBox', 'loginBox');
+                    }, 1000);
                 }
             })
         },

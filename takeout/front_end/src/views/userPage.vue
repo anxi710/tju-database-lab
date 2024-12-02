@@ -95,9 +95,10 @@ export default {
     },
     data() {
         return {
-            username: 'Anxi',
+            username: '',
+            role: '',
             active: 1,
-            profilePhotoURL: 'https://avatars.githubusercontent.com/u/77191763'
+            profilePhotoURL: ''
         };
     },
     methods: {
@@ -106,6 +107,16 @@ export default {
             this.active = index;
         }
     },
+    mounted() {
+        console.log('User Page Mounted');
+
+        // 获取用户信息
+        this.username = window.localStorage.getItem('username');
+        this.role = window.localStorage.getItem('role');
+
+        // 获取用户头像
+        this.profilePhotoURL = window.localStorage.getItem('profilePhotoURL');
+    }
 }
 </script>
 

@@ -148,8 +148,7 @@ export default {
                     this.$axios.post('/api/user/register', {
                         username: this.registerForm.username,
                         telephone: this.registerForm.telephone,
-                        password: this.registerForm.password,
-                        role: 'user'
+                        password: this.registerForm.password
                     }).then((res) => {
                         console.log(res.data.code);
                         if (res.data.code == 200) {

@@ -18,7 +18,8 @@
                     <el-upload
                         v-else
                         class="avatar-uploader"
-                        action="http://127.0.0.1:5000/api/user/upload"
+                        action="http://127.0.0.1:5000/api/user/profilePhoto/upload"
+                        :data="personalInfoForm"
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
                         :before-upload="beforeAvatarUpload"
@@ -42,13 +43,11 @@
                 <el-form-item label="电话" prop="phone">
                     <el-input v-model="personalInfoForm.phone" style="width: 220px"></el-input>
                 </el-form-item>
-                <el-form-item label="常用地址" prop="usualAddress">
-                    <el-input v-model="personalInfoForm.usualAddress" style="width:220px"></el-input>
-                </el-form-item>
             </el-form>
 
             <div style="padding-left:80px; padding-top: 10px">
-                <el-button type="primary" @click="modify()">开始修改</el-button>
+                <el-button v-if="modifyOrNot" type="primary" @click="modify()">开始修改</el-button>
+                <el-button v-else type="primary" @click="cancel()">取消修改</el-button>
                 <el-button type="primary" @click="confirm()">确认修改</el-button>
             </div>
         </el-main>
@@ -62,7 +61,7 @@ export default {
         return {
             personalInfoForm: {
                 profilePhotoUrl: '',
-                userName: '',
+                userName: 'anxi',
                 realName: '',
                 sex: '',
                 phone: '',
@@ -73,18 +72,24 @@ export default {
         }
     },
     methods: {
-        getdata() {
-            // this.$axios.get("/api/user/usermsg").then((res) => {
-            //     console.log(res.data);
-            //     if (res.data.status == 200) {
-            //         this.form.age = res.data.data.age;
-            //         this.form.mail = res.data.data.mail;
-            //         this.form.phone = res.data.data.phone;
-            //         this.form.real_name = res.data.data.real_name;
-            //         this.form.sex = res.data.data.sex;
-            //         this.form.user_name = res.data.data.user_name;
-            //     }
-            // })
+        getData(username) {
+            this.$axios.get('/api/user/info', {
+                params: {
+                    username: username
+                }
+            }).then((res) => {
+                console.log(res.data);
+                if (res.data.status === 200) {
+                    const data = res.data;
+                    this.personalInfoForm.profilePhotoUrl = data.profilePhotoUrl;
+                    this.personalInfoForm.userName = username;
+                    this.personalInfoForm.realName = data.realName;
+                    this.personalInfoForm.sex = data.sex;
+                    this.personalInfoForm.phone = data.telephone;
+                }
+            }).catch((error) => {
+                console.error('请求失败:', error);
+            });
         },
         modify() {
             this.modifyOrNot = !this.modifyOrNot
@@ -106,7 +111,8 @@ export default {
         }
     },
     mounted() {
-        // this.getdata()
+        // console.log(window.localStorage.getItem('username'));
+        this.getData(window.localStorage.getItem('username'));
     }
 }
 </script>
@@ -141,8 +147,8 @@ span {
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
 }
 .avatar-uploader .el-upload:hover {
 border-color: #409EFF;
@@ -150,13 +156,13 @@ border-color: #409EFF;
 .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 20px;
-    height: 20px;
+    width: 50px;
+    height: 50px;
     text-align: center;
 }
 .avatar {
-    width: 178px;
-    height: 178px;
+    width: 80px;
+    height: 80px;
     display: block;
 }
 </style>

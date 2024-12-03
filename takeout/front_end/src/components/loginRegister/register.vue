@@ -176,6 +176,11 @@ export default {
                                     this.$emit('changeBox', 'loginBox')
                                 }, 1000)
                             }
+                        } else if (res.data.code == 403) {
+                            this.$notify.error({
+                                title: '错误',
+                                message: res.data.msg
+                            })
                         } else {
                             this.$notify.error({
                                 title: '错误',

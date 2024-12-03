@@ -15,7 +15,7 @@ tmux select-pane -U
 # 再次分割窗口，创建第三个窗口
 tmux split-window -h
 tmux send-keys 'cd ./takeout/back_end ; conda activate takeout' C-m
-tmux send-keys 'python app.py' C-m
+tmux send-keys 'python run.py' C-m
 
 # 选择第二个窗口
 tmux select-pane -t 2

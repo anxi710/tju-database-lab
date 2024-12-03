@@ -86,7 +86,7 @@ export default {
                         title: '错误',
                         message: res.data.msg,
                         type: 'error',
-                        duration: 3000
+                        duration: 1000
                     })
                 } else {
                     this.$notify({

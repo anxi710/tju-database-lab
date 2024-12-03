@@ -6,47 +6,62 @@
         </el-header>
 
         <el-main class="body">
-            <el-form ref="personalInfoForm" :model="personalInfoForm" label-width="20%" label-position="left" :disabled="modifyOrNot">
+            <el-form v-if="~is_modify" ref="userInfoForm" :model="userInfoForm" label-width="20%" label-position="left" :disabled="true">
                 <el-form-item label="头像" prop="profilePhoto">
                     <el-avatar
-                        v-if="modifyOrNot == true"
                         shape="square"
                         :size="50"
-                        :src="personalInfoForm.profilePhotoUrl"
+                        :src="userInfoForm.profilePhotoUrl"
                         icon="el-icon-user-solid">
                     </el-avatar>
+                </el-form-item>
+                <el-form-item label="用户名" prop="userName">
+                    <span>{{ userInfoForm.username }}</span>
+                </el-form-item>
+                <el-form-item label="姓名" prop="realName">
+                    <span>{{ userInfoForm.realname }}</span>
+                </el-form-item>
+                <el-form-item label="性别" prop="sex">
+                    <span>{{ userInfoForm.sex === "" ? "" : (userInfoForm.sex == "man" ? "男" : "女") }}</span>
+                </el-form-item>
+                <el-form-item label="电话" prop="phone">
+                    <span>{{ userInfoForm.telephone }}</span>
+                </el-form-item>
+            </el-form>
+
+            <el-form v-else ref="tmpInfoForm" :model="tmpInfoForm" label-width="20%" label-position="left" :disabled="false">
+                <el-form-item label="头像" prop="profilePhoto">
                     <el-upload
-                        v-else
                         class="avatar-uploader"
                         action="http://127.0.0.1:5000/api/user/profilePhoto/upload"
-                        :data="personalInfoForm"
+                        :data="userInfoForm"
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
                         :before-upload="beforeAvatarUpload"
                     >
-                        <img v-if="uploadImageUrl" :src="uploadImageUrl" class="avatar">
+                        <img v-if="tmpInfoForm.profilePhotoUrl" :src="tmpInfoForm.profilePhotoUrl" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="用户名" prop="userName">
-                    <span>{{ personalInfoForm.userName }}</span>
+                    <span>{{ userInfoForm.username }}</span>
                 </el-form-item>
                 <el-form-item label="姓名" prop="realName">
-                    <el-input v-model="personalInfoForm.realName" style="width: 150px"></el-input>
+                    <el-input v-model="tmpInfoForm.realname" style="width: 150px"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" prop="sex">
-                    <el-select v-model="personalInfoForm.sex" style="width: 150px">
+                    <el-select v-model="tmpInfoForm.sex" style="width: 150px">
                         <el-option label="男" value="男"></el-option>
                         <el-option label="女" value="女"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="电话" prop="phone">
-                    <el-input v-model="personalInfoForm.phone" style="width: 220px"></el-input>
+                    <el-input v-model="tmpInfoForm.phone" style="width: 220px"></el-input>
                 </el-form-item>
             </el-form>
 
             <div style="padding-left:80px; padding-top: 10px">
-                <el-button v-if="modifyOrNot" type="primary" @click="modify()">开始修改</el-button>
+                <el-button v-if="~is_modify" type="primary" @click="modify()">开始修改</el-button>
                 <el-button v-else type="primary" @click="cancel()">取消修改</el-button>
                 <el-button type="primary" @click="confirm()">确认修改</el-button>
             </div>
@@ -57,18 +72,24 @@
 
 <script>
 export default {
+    name: 'userCenter',
     data() {
         return {
-            personalInfoForm: {
+            userInfoForm: {
                 profilePhotoUrl: '',
-                userName: 'anxi',
-                realName: '',
+                username: 'anxi',
+                realname: '',
                 sex: '',
-                phone: '',
-                usualAddress: ''
+                telephone: ''
             },
-            modifyOrNot: true,
-            uploadImageUrl: ''
+            tmpInfoForm: {
+                profilePhotoUrl: '',
+                username: '',
+                realname: '',
+                sex: '',
+                telephone: ''
+            },
+            is_modify: false
         }
     },
     methods: {
@@ -85,17 +106,35 @@ export default {
                     this.personalInfoForm.userName = username;
                     this.personalInfoForm.realName = data.realName;
                     this.personalInfoForm.sex = data.sex;
-                    this.personalInfoForm.phone = data.telephone;
+                    this.personalInfoForm.telephone = data.telephone;
+                    this.tmpInfoForm.profilePhotoUrl = data.profilePhotoUrl;
+                    this.tmpInfoForm.username = username;
+                    this.tmpInfoForm.realname = data.realName;
+                    this.tmpInfoForm.sex      = data.sex;
+                    this.tmpInfoForm.telephone    = data.telephone;
                 }
             }).catch((error) => {
                 console.error('请求失败:', error);
             });
         },
         modify() {
-            this.modifyOrNot = !this.modifyOrNot
+            this.is_modify = ~this.is_modify;
         },
-        handleAvatarSuccess(res, file) {
-            this.uploadImageUrl = URL.createObjectURL(file.raw);
+        cancel() {
+            this.tmpInfoForm.realname = this.userInfoForm.realname;
+            this.tmpInfoForm.sex      = this.userInfoForm.sex;
+            this.tmpInfoForm.telephone    = this.userInfoForm.telephone;
+            this.is_modify = ~this.is_modify;
+
+            this.$axios.post
+        },
+        handleAvatarSuccess() {
+            this.$notify({
+                title: '成功',
+                message: '头像上传成功',
+                type: 'success'
+            });
+            this.tmpInfoForm.profilePhotoUrl = "http://localhost:5000/api/user/profilePhoto/get?" + "username=" + this.tmpInfoForm.username;
         },
         beforeAvatarUpload(file) {
             const checkType = file.type === 'image/jpeg' || file.type === 'image/png' ||

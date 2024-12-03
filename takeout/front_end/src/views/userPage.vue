@@ -12,7 +12,7 @@
             <p id="greetings">😃Hi {{ this.username }} ~ 今天吃点什么？😉</p>
 
             <p id="profilePhoto">
-                <el-avatar size="medium" :src="profilePhotoURL" icon="el-icon-user-solid"></el-avatar>
+                <el-avatar size="medium" :src="profilePhotoUrl" icon="el-icon-user-solid"></el-avatar>
             </p>
         </el-header>
 
@@ -67,7 +67,7 @@
 
 
                 <div id="personalCenter" v-else-if="active == 5">
-                    <personalCenter></personalCenter>
+                    <userCenter></userCenter>
                 </div>
 
             </el-main>
@@ -82,7 +82,7 @@ import pendingOrder from '@/components/userPage/orderPage/pendingOrder.vue'
 import finishedOrder from '@/components/userPage/orderPage/finishedOrder.vue'
 import unfilledOrder from '@/components/userPage/orderPage/unfilledOrder.vue'
 
-import personalCenter from '@/components/userPage/personalCenter.vue'
+import userCenter from '@/components/userPage/userCenter.vue'
 
 export default {
     components: {
@@ -91,14 +91,14 @@ export default {
         finishedOrder,
         unfilledOrder,
 
-        personalCenter
+        userCenter
     },
     data() {
         return {
             username: '',
             role: '',
             active: 1,
-            profilePhotoURL: ''
+            profilePhotoUrl: ''
         };
     },
     methods: {
@@ -114,8 +114,7 @@ export default {
         this.username = window.localStorage.getItem('username');
         this.role = window.localStorage.getItem('role');
 
-        // 获取用户头像
-        this.profilePhotoURL = window.localStorage.getItem('profilePhotoURL');
+        this.profilePhotoUrl = "http://localhost:5000/api/user/profilePhoto/get?" + "username=" + this.username;
     }
 }
 </script>

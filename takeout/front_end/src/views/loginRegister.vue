@@ -1,22 +1,24 @@
 <template>
 
-    <div class="container">
+    <el-container class="container">
 
-        <div class="bar">
+        <el-header class="header">
             <img src="../assets/images/logo2.png" height=35px alt="同济大学"
                 style="padding-left: 10px" />
-        </div>
+        </el-header>
 
-        <!-- 登录表单 -->
-        <loginBox v-if="curBox === 'loginBox'" @changeBox="changeBox" />
+        <el-main>
+            <!-- 登录表单 -->
+            <loginBox v-if="curBox === 'loginBox'" @changeBox="changeBox" />
 
-        <!-- 注册表单 -->
-        <registerBox v-else-if="curBox === 'registerBox'" @changeBox="changeBox" />
+            <!-- 注册表单 -->
+            <registerBox v-else-if="curBox === 'registerBox'" @changeBox="changeBox" />
 
-        <!-- 找回密码 -->
-        <forgetBox v-else @changeBox="changeBox" />
+            <!-- 找回密码 -->
+            <forgetBox v-else @changeBox="changeBox" />
+        </el-main>
 
-    </div>
+    </el-container>
 
 </template>
 
@@ -58,7 +60,7 @@ export default {
     background-repeat: no-repeat;
 }
 
-.bar {
+.header {
     width: 100%;
     height: 55px;
     background-color: white;

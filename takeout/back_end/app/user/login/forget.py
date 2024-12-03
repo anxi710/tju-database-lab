@@ -4,11 +4,10 @@ from ..models import User
 user_forget_bp = Blueprint("user_forget", __name__)
 
 # 修改密码
-@user_forget_bp.route("/", methods=["POST"])
+@user_forget_bp.route("", methods=["POST"])
 def user_forget():
     print("开始处理忘记密码请求")
 
-    print("请求数据为：", request.json)
     telephone = request.json.get("telephone").strip()
     password = request.json.get("password").strip()
 
@@ -16,8 +15,11 @@ def user_forget():
     data = User.query.filter_by(telephone=telephone).first()
 
     if data == None:
-        print("忘记密码请求处理完成")
-        return jsonify({"code": 1000, "msg": "手机号不存在"})
+        print("请求的手机号码不存在，拒绝处理")
+        return jsonify({"code": 403, "msg": "手机号不存在"})
+    elif data.password == password:
+        print("新密码与旧密码相同，拒绝处理")
+        return jsonify({"code": 403, "msg": "新密码与旧密码相同"})
     else:
         data.password = password
         data.save()

@@ -1,8 +1,8 @@
 import os
 from flask import Blueprint, request, jsonify
 
-from ...config import Config
 from ..models import User
+from ...config import Config
 
 UPLOAD_FOLDER = Config.UPLOAD_FOLDER
 

@@ -3,6 +3,4 @@ reference2/
 .vscode/
 .idea/
 *.log
-takeout/.vscode
-takeout/back_end.zip
-takeout/back_end/__pychache__
+backup/

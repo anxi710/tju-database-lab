@@ -1,3 +1,5 @@
+import os
+
 class Config(object):
     """ 后端配置信息 """
 
@@ -14,4 +16,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     # 上传文件的配置
-    UPLOAD_FOLDER = 'uploads'
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), 'upload')
+
+    # 静态文件的配置
+    STATIC_FOLDER = os.path.join(os.getcwd(), 'static')

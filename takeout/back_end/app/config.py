@@ -15,8 +15,5 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = f"{DIALCT}+{DRITVER}://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?charset=utf8"
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
-    # 上传文件的配置
-    UPLOAD_FOLDER = os.path.join(os.getcwd(), 'upload')
-
     # 静态文件的配置
     STATIC_FOLDER = os.path.join(os.getcwd(), 'static')

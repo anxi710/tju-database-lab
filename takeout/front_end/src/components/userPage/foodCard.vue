@@ -2,11 +2,12 @@
 <template>
     <div>
         <el-card :body-style="{ padding: '5px' }" shadow="hover">
-            <img :src="food.image" class="image">
+            <img src="https://ts1.cn.mm.bing.net/th/id/R-C.c1cf981cc5dcb41b7f3e1771e9a10732?rik=AVWBHaSBFQON7g&riu=http%3a%2f%2fn.sinaimg.cn%2fsinacn10119%2f0%2fw2000h1200%2f20191031%2f5275-ihqyuym9420397.jpg&ehk=Bz4Ql73GN0vDatskuqYLxyudxmSqyebuRF0iJ4JYs7E%3d&risl=&pid=ImgRaw&r=0"
+                class="image"
+            />
             <div style="padding: 14px;">
                 <div>名称：{{ food.name }}</div>
                 <div>价格：{{ food.price }}</div>
-                <div>简介：{{ food.description }}</div>
                 <div class="bottom">
                     <el-button type="text" class="button" @click="order">点单</el-button>
                 </div>

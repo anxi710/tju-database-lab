@@ -7,9 +7,8 @@
 
         <el-main class="body">
 
-            <el-table :data="tableData" style="width: 100%; font-size: 16px" class="table" stripe
-                :default-sort="{ prop: 'orderTime', order: 'descending' }" show-summary>
-                <el-table-column prop="orderTime" label="订餐时间" sortable />
+            <el-table :data="tableData" style="width: 100%; font-size: 16px"
+                class="table" stripe show-summary>
                 <el-table-column prop="shopName" label="店铺名称" />
                 <el-table-column prop="foodName" label="食物名称" />
                 <el-table-column prop="orderPrice" label="订单金额" sortable />
@@ -30,49 +29,44 @@ export default {
         return {
             tableData: [
                 {
-                    orderTime: '06-01 12:00',
-                    shopName: '麦当劳',
-                    foodName: '麦辣鸡腿堡',
-                    orderPrice: 18,
+                    shopName: '豪大大香鸡排',
+                    foodName: '可乐鸡排套餐',
+                    orderPrice: 21,
                     orderWay: '外卖',
-                    consName: '张三',
-                    consAddress: '广东省广州市天河区'
+                    consName: '王五',
+                    consAddress: '友园四号楼'
                 },
                 {
-                    orderTime: '06-01 12:00',
-                    shopName: '麦当劳',
-                    foodName: '麦辣鸡腿堡',
-                    orderPrice: 18,
+                    shopName: '豪大大香鸡排',
+                    foodName: '汉堡套餐',
+                    orderPrice: 20,
                     orderWay: '外卖',
-                    consName: '张三',
-                    consAddress: '广东省广州市天河区'
+                    consName: '王五',
+                    consAddress: '友园四号楼'
                 },
                 {
-                    orderTime: '06-01 12:00',
-                    shopName: '麦当劳',
-                    foodName: '麦辣鸡腿堡',
-                    orderPrice: 18,
-                    orderWay: '外卖',
-                    consName: '张三',
-                    consAddress: '广东省广州市天河区'
+                    shopName: '豪大大香鸡排',
+                    foodName: '香辣鸡排',
+                    orderPrice: 12,
+                    orderWay: '自提',
+                    consName: '王五',
+                    consAddress: '友园四号楼'
                 },
                 {
-                    orderTime: '06-01 12:00',
-                    shopName: '麦当劳',
-                    foodName: '麦辣鸡腿堡',
-                    orderPrice: 18,
+                    shopName: '小麻鲜',
+                    foodName: '麻辣小龙虾套餐',
+                    orderPrice: 30,
                     orderWay: '外卖',
-                    consName: '张三',
-                    consAddress: '广东省广州市天河区'
+                    consName: '李四',
+                    consAddress: '友园六号楼'
                 },
                 {
-                    orderTime: '06-01 12:00',
-                    shopName: '麦当劳',
-                    foodName: '麦辣鸡腿堡',
-                    orderPrice: 18,
-                    orderWay: '外卖',
-                    consName: '张三',
-                    consAddress: '广东省广州市天河区'
+                    shopName: '小麻鲜',
+                    foodName: '香辣烤鱼饭',
+                    orderPrice: 15,
+                    orderWay: '自提',
+                    consName: '李四',
+                    consAddress: '友园六号楼'
                 }
             ],
         }

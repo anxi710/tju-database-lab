@@ -11,9 +11,6 @@
 
             <p id="greetings">😃Hi {{ this.username }} ~ 今天吃点什么？😉</p>
 
-            <p id="profilePhoto">
-                <el-avatar size="medium" :src="profilePhotoUrl" icon="el-icon-user-solid"></el-avatar>
-            </p>
         </el-header>
 
         <el-container>
@@ -90,15 +87,13 @@ export default {
         pendingOrder,
         finishedOrder,
         unfilledOrder,
-
         userCenter
     },
     data() {
         return {
             username: '',
             role: '',
-            active: 1,
-            profilePhotoUrl: ''
+            active: 1
         };
     },
     methods: {
@@ -113,8 +108,6 @@ export default {
         // 获取用户信息
         this.username = window.localStorage.getItem('username');
         this.role = window.localStorage.getItem('role');
-
-        this.profilePhotoUrl = "http://localhost:5000/api/user/profilePhoto/get?" + "username=" + this.username;
     }
 }
 </script>
@@ -145,14 +138,6 @@ export default {
 
     text-align: center;
 }
-
-#profilePhoto {
-    /* 定位在窗口右侧 */
-    position: absolute;
-    right: 10px;
-    padding-right: 10px;
-}
-
 
 .navigationMenu {
     width: 99%;

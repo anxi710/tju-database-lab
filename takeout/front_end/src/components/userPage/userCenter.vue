@@ -7,14 +7,6 @@
 
         <el-main class="body">
             <el-form v-if="~is_modify" ref="userInfoForm" :model="userInfoForm" label-width="20%" label-position="left" :disabled="true">
-                <el-form-item label="头像" prop="profilePhoto">
-                    <el-avatar
-                        shape="square"
-                        :size="50"
-                        :src="userInfoForm.profilePhotoUrl"
-                        icon="el-icon-user-solid">
-                    </el-avatar>
-                </el-form-item>
                 <el-form-item label="用户名" prop="userName">
                     <span>{{ userInfoForm.username }}</span>
                 </el-form-item>
@@ -22,27 +14,14 @@
                     <span>{{ userInfoForm.realname }}</span>
                 </el-form-item>
                 <el-form-item label="性别" prop="sex">
-                    <span>{{ userInfoForm.sex === "" ? "" : (userInfoForm.sex == "man" ? "男" : "女") }}</span>
+                    <span>{{ userInfoForm.sex === "" ? "" : userInfoForm.sex }}</span>
                 </el-form-item>
                 <el-form-item label="电话" prop="phone">
                     <span>{{ userInfoForm.telephone }}</span>
                 </el-form-item>
             </el-form>
 
-            <el-form v-else ref="tmpInfoForm" :model="tmpInfoForm" label-width="20%" label-position="left" :disabled="false">
-                <el-form-item label="头像" prop="profilePhoto">
-                    <el-upload
-                        class="avatar-uploader"
-                        action="http://127.0.0.1:5000/api/user/profilePhoto/upload"
-                        :data="userInfoForm"
-                        :show-file-list="false"
-                        :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload"
-                    >
-                        <img v-if="tmpInfoForm.profilePhotoUrl" :src="tmpInfoForm.profilePhotoUrl" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                </el-form-item>
+            <el-form v-else ref="tmpInfoForm" :model="tmpInfoForm" label-width="20%" label-position="left">
                 <el-form-item label="用户名" prop="userName">
                     <span>{{ userInfoForm.username }}</span>
                 </el-form-item>
@@ -56,7 +35,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="电话" prop="phone">
-                    <el-input v-model="tmpInfoForm.phone" style="width: 220px"></el-input>
+                    <span>{{ userInfoForm.telephone }}</span>
                 </el-form-item>
             </el-form>
 
@@ -76,14 +55,12 @@ export default {
     data() {
         return {
             userInfoForm: {
-                profilePhotoUrl: '',
-                username: 'anxi',
+                username: '',
                 realname: '',
                 sex: '',
                 telephone: ''
             },
             tmpInfoForm: {
-                profilePhotoUrl: '',
                 username: '',
                 realname: '',
                 sex: '',
@@ -94,24 +71,22 @@ export default {
     },
     methods: {
         getData(username) {
-            this.$axios.get('/api/user/info', {
+            this.$axios.get('/api/user/info/get', {
                 params: {
                     username: username
                 }
             }).then((res) => {
                 console.log(res.data);
-                if (res.data.status === 200) {
-                    const data = res.data;
-                    this.personalInfoForm.profilePhotoUrl = data.profilePhotoUrl;
-                    this.personalInfoForm.userName = username;
-                    this.personalInfoForm.realName = data.realName;
-                    this.personalInfoForm.sex = data.sex;
-                    this.personalInfoForm.telephone = data.telephone;
-                    this.tmpInfoForm.profilePhotoUrl = data.profilePhotoUrl;
-                    this.tmpInfoForm.username = username;
-                    this.tmpInfoForm.realname = data.realName;
-                    this.tmpInfoForm.sex      = data.sex;
-                    this.tmpInfoForm.telephone    = data.telephone;
+                if (res.data.code === 200) {
+                    this.userInfoForm.username  = res.data.data.username;
+                    this.userInfoForm.realname  = res.data.data.realname;
+                    this.userInfoForm.sex       = res.data.data.sex;
+                    this.userInfoForm.telephone = res.data.data.telephone;
+                    this.tmpInfoForm.username   = res.data.data.username;
+                    this.tmpInfoForm.realname   = res.data.data.realname;
+                    this.tmpInfoForm.sex        = res.data.data.sex;
+                    this.tmpInfoForm.telephone  = res.data.data.telephone;
+                    console.log(this.userInfoForm.username);
                 }
             }).catch((error) => {
                 console.error('请求失败:', error);
@@ -123,31 +98,23 @@ export default {
         cancel() {
             this.tmpInfoForm.realname = this.userInfoForm.realname;
             this.tmpInfoForm.sex      = this.userInfoForm.sex;
-            this.tmpInfoForm.telephone    = this.userInfoForm.telephone;
             this.is_modify = ~this.is_modify;
-
-            this.$axios.post
         },
-        handleAvatarSuccess() {
-            this.$notify({
-                title: '成功',
-                message: '头像上传成功',
-                type: 'success'
-            });
-            this.tmpInfoForm.profilePhotoUrl = "http://localhost:5000/api/user/profilePhoto/get?" + "username=" + this.tmpInfoForm.username;
-        },
-        beforeAvatarUpload(file) {
-            const checkType = file.type === 'image/jpeg' || file.type === 'image/png' ||
-                file.type === 'image/jpg';
+        confirm() {
+            this.$axios.post('/api/user/info/update', {
+                username: this.userInfoForm.username,
+                realname: this.tmpInfoForm.realname,
+                sex: this.tmpInfoForm.sex,
+            }).then((res) => {
+                console.log(res.data);
+                if (res.data.code === 200) {
+                    this.userInfoForm.realname  = this.tmpInfoForm.realname;
+                    this.userInfoForm.sex       = this.tmpInfoForm.sex;
+                }
+            })
 
-            if (!checkType) {
-                this.$notify.error({
-                    title: '错误',
-                    message: '上传头像图片只能是 PNG 或 JPG 或 JPEG 格式!'
-                });
-            }
-            return checkType;
-        }
+            this.is_modify = ~this.is_modify;
+        },
     },
     mounted() {
         // console.log(window.localStorage.getItem('username'));
@@ -180,28 +147,4 @@ span {
     font-size: 18px;
 }
 
-.avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    width: 60px;
-    height: 60px;
-}
-.avatar-uploader .el-upload:hover {
-border-color: #409EFF;
-}
-.avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 50px;
-    height: 50px;
-    text-align: center;
-}
-.avatar {
-    width: 80px;
-    height: 80px;
-    display: block;
-}
 </style>

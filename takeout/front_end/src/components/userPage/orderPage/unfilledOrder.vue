@@ -7,9 +7,8 @@
 
         <el-main class="body">
 
-            <el-table :data="tableData" style="width: 100%; font-size:16px" class="table" stripe
-                :default-sort="{ prop: 'orderTime', order: 'descending' }" show-summary>
-                <el-table-column prop="orderTime" label="订餐时间" sortable />
+            <el-table :data="tableData" style="width: 100%; font-size:16px"
+                class="table" stripe show-summary>
                 <el-table-column prop="shopName" label="店铺名称" />
                 <el-table-column prop="foodName" label="食物名称" />
                 <el-table-column prop="orderPrice" label="订单金额" sortable />
@@ -48,43 +47,39 @@ export default {
         return {
             tableData: [
                 {
-                    orderTime: '06-01 12:00',
-                    shopName: '麦当劳',
-                    foodName: '麦辣鸡腿堡',
-                    orderPrice: 18,
+                    shopName: '熊大爷现包饺子',
+                    foodName: '鲜肉饺子',
+                    orderPrice: 10,
                     orderWay: '外卖',
                     consName: '张三',
-                    consAddress: '广东省广州市天河区',
+                    consAddress: '友园四号楼',
                     status: '未接单'
                 },
                 {
-                    orderTime: '06-01 12:00',
-                    shopName: '麦当劳',
-                    foodName: '麦辣鸡腿堡',
-                    orderPrice: 18,
+                    shopName: '熊大爷现包饺子',
+                    foodName: '韭菜鸡蛋饺子',
+                    orderPrice: 10,
                     orderWay: '外卖',
                     consName: '张三',
-                    consAddress: '广东省广州市天河区',
-                    status: '未接单'
-                },
-                {
-                    orderTime: '06-01 12:00',
-                    shopName: '麦当劳',
-                    foodName: '麦辣鸡腿堡',
-                    orderPrice: 18,
-                    orderWay: '外卖',
-                    consName: '张三',
-                    consAddress: '广东省广州市天河区',
+                    consAddress: '友园四号楼',
                     status: '制作中'
                 },
                 {
-                    orderTime: '06-01 12:00',
-                    shopName: '麦当劳',
-                    foodName: '麦辣鸡腿堡',
-                    orderPrice: 18,
+                    shopName: '小麻鲜',
+                    foodName: '香辣烤鱼饭',
+                    orderPrice: 15,
                     orderWay: '外卖',
-                    consName: '张三',
-                    consAddress: '广东省广州市天河区',
+                    consName: '李四',
+                    consAddress: '友园四号楼',
+                    status: '未接单'
+                },
+                {
+                    shopName: '小麻鲜',
+                    foodName: '香辣烤鱼饭',
+                    orderPrice: 15,
+                    orderWay: '外卖',
+                    consName: '李四',
+                    consAddress: '友园四号楼',
                     status: '制作中'
                 }
             ],
@@ -92,12 +87,28 @@ export default {
     },
     methods: {
         getdata() {
-            // this.$axios.get("/api/user/sending").then((res) => {
-            //     console.log(res.data);
-            //     if (res.data.status == 200) {
-            //         this.tableData = res.data.tabledata;
-            //     }
-            // })
+            this.$axios.get("/api/order/loadAllOrder", {
+                params: {
+                    username: window.localStorage.getItem('username')
+                }
+            }).then((res) => {
+                console.log(res.data);
+                if (res.data.code == 200) {
+                    for (let i = 0; i < res.data.data.length; i++) {
+                        // if (res.data.data[i].status === '未接单' || res.data.data[i].status === '制作中') {
+                            this.tableData.push({
+                                shopName: res.data.data[i].shopName,
+                                foodName: res.data.data[i].foodName,
+                                orderPrice: res.data.data[i].orderPrice,
+                                orderWay: res.data.data[i].orderWay,
+                                consName: res.data.data[i].consName,
+                                consAddress: res.data.data[i].consAddress,
+                                status: "未接单"
+                            });
+                        // }
+                    }
+                }
+            })
         },
         filterTag(value, row) {
             return row.status === value;
